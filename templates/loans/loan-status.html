@@ -1,0 +1,197 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Status {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+        <div class="card-header">
+            <h2 class="">Loan Status for {{ requested_by.get_full_name }}</h2>
+        </div>
+        <div class="card-body p-2">
+            {% if loan_requests and loan_requests.count > 0 %}
+                {% for loan_request in loan_requests %}
+                    <button class="accordion-folder non-print-item">
+                        <strong>{{ loan_request.loan }}</strong>
+                    </button>
+                    <div class="accordion-panel">
+                        <p></p>
+                        <div class="row">
+                        <div class="col-5">
+                            <table class="table table-responsive table-striped">
+                                <tr>
+                                    <td>Requested by</td>
+                                    <td>: <a href="{% url 'members:profile' pk=loan_request.requested_by.pk %}" >{{ loan_request.requested_by.get_full_name }}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Date requested</td>
+                                    <td>: {{ loan_request.date_requested|date:'d-m-Y H:i' }}</td>
+                                </tr>
+                            {% if loan_request.disbursement %}
+                                <tr><td>Date disbursed</td><td>: {{ loan_request.disbursement.date_disbursed|date:"d-m-Y  H:i" }}</td></tr>
+                            {% endif %}
+                                <tr><td>Amount requested</td><td>: {{ loan_request.amount_requested|floatformat:2 }}</td></tr>
+                                <tr><td>Balance</td><td>: {{ loan_request.get_amount_outstanding|floatformat:2 }}</td></tr>
+                                <tr>
+                                    <td>Status</td>
+                                    {% if loan_request.status == 'rejected' %}
+                                        <td style="background-color: #EE6E73;color: honeydew; ">:
+                                            <a href="{% url 'loans:approve-loan' pk=loan_request.pk %}">
+                                                {{ loan_request.status }}
+                                            </a>
+                                    {% elif loan_request.status == 'pending'%}
+                                        <td style="background-color: #2aabd2;color: #fff;" id="loan-status-td">:
+                                            <a href="{% url 'loans:approve-loan' pk=loan_request.pk %}">
+                                                {{ loan_request.status }}
+                                            </a>
+                                    {% elif loan_request.status == 'approved'%}
+                                        <td style="background-color: #3e8f3e;color: honeydew; ">:
+                                            {{ loan_request.status|capfirst }}
+                                            <a href="{% url 'loans:disburse-loan' request_id=loan_request.id %}">
+                                           &nbsp;  Disburse loan
+                                        </a>
+                                    {% elif loan_request.status == 'disbursed'%}
+                                        <td style="background-color: #3e8f3e;color: honeydew; ">: {{ loan_request.status }}
+                                    {% else %}
+                                        <td style="background-color: #3e8f3e;color: honeydew; ">: {{ loan_request.status }}{{ loan_request.loan_repayments }}
+                                    {% endif %}
+                                    </td>
+                                </tr>
+                                {% if loan_request.status == 'disbursed'%}
+                                    <tr><td>Next due</td><td>: {{ loan_request.next_due|truncatechars:14 }}</td></tr>
+                                {% endif %}
+                                <tr>
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#filtersModal">
+                                            <i class="fa fa-print" aria-hidden="true"></i> Statement
+                                        </a>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                            <div class="modal-dialog" role="document">
+                                                <form action="{% url 'loans:print-repayment-statement' pk=loan_request.pk %}" method="get" class="modal-content" id="filters-form">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title text-left" id="myModalLabel">Print Statement</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {{ filters_form }}
+                                                        <div>
+                                                            <label for="date_from">Date from: </label>
+                                                            <input id="date_from" name="date_from" type="text" class="form-control" required />
+                                                        </div>
+                                                        <div>
+                                                            <label for="date_to">Date to: </label>
+                                                            <input id="date_to" name="date_to" type="text" class="form-control" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-success">Print</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div><!-- end-Modal -->
+                                    </td>
+                                    {% if loan_request.status == "disbursed" and perms.loans.can_repay_loans %}
+                                        <td>
+                                            <a href="{% url 'loans:repay-loan' pk=loan_request.pk %}" class=" btn btn-info pull-right">
+                                                Repay loan
+                                            </a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            </table>
+                            {% if loan_request.is_disbursed %}
+                                <a href="{% url 'loans:armotization-schedule' %}?loan_request_id={{ loan_request.pk }}" class="btn btn-info btn-block mb-3">
+                                    View Armotization Schedule
+                                </a>
+                                <a href="{% url 'loans:view-disbursed-loan' pk=loan_request.pk %}" class="btn btn-info btn-block mb-3">
+                                    View Repayment Schedule
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-7">
+                            <div class="row mb-2 ">
+                                <div class="col-lg-6"><h3>Guarantors</h3></div>
+
+                                <div class="col-lg-6 text-right">
+                                    {% if loan_request.requested_by == request.user %}
+                                        <a class="btn btn-info" href="{% url 'loans:search-guarantor' pk=loan_request.pk %}">Request</a>
+                                    {% endif %}
+                                    <a class="btn btn-info" href="{% url 'loans:print-loan-status' pk=loan_request.pk %}">
+                                       <i class="fa fa-print"></i> Print Application
+                                    </a>
+                                </div>
+                            </div>
+
+                            {% if loan_request.guarantors|length > 0 %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Name</th><th>Member #</th><th>Amount</th><th>Status</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for guarantor in loan_request.guarantors %}
+                                            <tr>
+                                                <td>{{ guarantor.guarantor.get_full_name }}</td>
+                                                <td>{{ guarantor.guarantor.member_number }}</td>
+                                                <td>{{ guarantor.amount }}</td>
+                                                <td>{{ guarantor.status|capfirst }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No guarantors requested for this loan
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+            {% else %}
+                <div class="alert alert-info">
+                    No loans requested yet.
+                </div>
+            {% endif %}
+            {% if loan_repayments %}
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                        <h4>Repayment Statement</h4>
+                    </div>
+                    <div class="col-md-6 text-right"></div>
+                </div>
+                <hr class="non-print-item">
+            {% endif %}
+
+
+            {% if loan_requests.count > 1 %}
+                <form id="filters-form" action="{% url 'loans:loan-status' pk=requested_by.pk %}" method="post">{% csrf_token %}
+                    Filter by {{ form.loan_request }} <button class="btn btn-success" type="submit">Apply</button>
+                    <a class="btn btn-info" href="{% url 'loans:loan-status' pk=requested_by.pk %}">Reset</a>
+                </form>
+            {% endif %}
+            {% if loan_repayments %}
+                <table class="table table-responsive table-striped">
+                    <thead>
+                        <th>Date</th><th>Product</th><th style="text-align:right;">Credit</th><th style="text-align:right;">Debit</th><th>Description</th><th style="text-align: right;">Balance</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for repayment in loan_repayments %}
+                            <tr>
+                                <td>{{ repayment.payment_date|date:'d/m/Y' }}</td>
+                                <td>{{ repayment.loan_request.loan }}</td>
+                                <td style="text-align: right;">{{ repayment.credit|floatformat:2 }}</td>
+                                <td style="text-align: right;">{{ repayment.debit|floatformat:2 }}</td>
+                                <td>{{ repayment.description|capfirst }}</td>
+                                <td style="text-align: right;">{{ repayment.outstanding|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock page_content %}

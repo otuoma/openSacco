@@ -1,0 +1,402 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}{{ member.get_full_name }} Profile {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'members:directory' %}">Member Profiles</a></li>
+                    <li class="breadcrumb-item active">{{ member.get_full_name }}</li>
+                </ol>
+            </div>
+            <div class="col-md-6 col-4 align-self-center">
+                <ul class="nav nav-pills pull-right btn-sm">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                    {% if perms.members.change_members %}
+                        {% if member.is_active and member.member_number is not null %}
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deactivate-member-{{ member.pk }}">Deactivate</a>
+                        {% else %}
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#activate-member-{{ member.pk }}">Activate</a>
+                        {% endif %}
+                    {% endif %}
+                    {% if perms.payments.add_payment %}
+                        <a class="dropdown-item" href="{% url 'payments:make-payment' pk=member.pk %}">Make Contribution</a>
+                    {% endif %}
+                        <a class="dropdown-item" href="{% url 'payments:statement' pk=member.pk %}">View statement</a>
+                        <a class="dropdown-item" href="{% url 'loans:loan-status' pk=member.pk %}">Loan Status</a>
+                        <a class="dropdown-item" href="{% url 'fines:list-member-fines' pk=member.pk %}">Fines</a>
+                        {% if request.user.is_superuser %}
+                        <a class="dropdown-item" href="{% url 'members:set-permissions' pk=member.pk %}">Set Permissions</a>
+                        {% endif %}
+                    </div>
+                  </li>
+                </ul>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        {% include 'members/member_dashboard.html' %}
+        <div class="row">
+            <div class="col-lg-4 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 text-left">
+                                {% if member.scanned_id %}
+                                    <a target="_blank" href="/media/{{ member.scanned_id }}" class="btn btn-success btn-xs">
+                                      Scanned ID
+                                    </a>
+                                {% else %}
+                                    <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#uploadIDModal">
+                                      Upload ID
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-6 col-md-6 text-right">
+                                <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#uploadPhotoModal">
+                                  Change photo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="m-t-30 text-center">
+                            {% if member.profile_photo %}
+                                <img src="/media/{{ member.profile_photo }}" class="img-circle" width="150" height="150"/>
+                            {% else %}
+                                <img src="/media/profile_photos/stock-vector-people-care-logo-412735153.jpg" class="img-circle" width="150" />
+                            {% endif %}
+
+                            <h4 class="card-title m-t-10">{{ member.get_full_name }}</h4>
+                            <h6 class="card-subtitle">Member Since {{ member.date_joined|date:'d-m-Y' }}</h6>
+                            {% if member.last_login %}
+                                <h6 class="card-subtitle">Last Seen {{ member.last_login|date:'d-m-Y H:i:s' }}</h6>
+                            {% else %}
+                                <h6 class="card-subtitle">Last Seen: Never</h6>
+                            {% endif %}
+                            <div class="row text-center justify-content-md-center">
+                                {% if member.member_number is not None %}
+                                    <div class="col-5"><i class="fa fa-user-circle-o"></i><br>
+                                        <span class="font-medium">{{ member.member_number }}</span>
+                                    </div>
+                                {% endif %}
+                                <div class="col-6">
+                                    <i class="fa fa-phone"></i> <br><span class="font-medium">{{ member.phone_number }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title">Bank Accounts</h3>
+                        </div>
+                        <div class="card-body">
+                            {% if bank_accounts.count > 0 %}
+                                <table class="table table-responsive table-striped mt-2">
+                                    {% for account in bank_accounts %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'members:edit-bank-account' account_id=account.pk %}">
+                                                    {{ account.bank }}
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                                <a href="{% url 'members:create-bank-account' member_id=member.pk %}" class="btn btn-info btn-block">Details</a>
+                            {% else %}
+                                <div class="alert alert-info mt-4">
+                                    No bank accounts have been added yet.
+                                    <a href="{% url 'members:create-bank-account' member_id=member.pk %}"> add new.</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+
+                    <div class="card-block">
+                        {% if change_password_form %}
+                            <div class="card-header">
+                                <h3 class="card-title">Change Password</h3>
+                            </div>
+                            <form action="{% url 'members:change-password' %}" method="post">{% csrf_token %}
+                                <div class="">
+                                    <label for="{{ change_password_form.new_password1.label }}">
+                                        {{ change_password_form.old_password.label }}
+                                    </label>
+                                    <p>{{ change_password_form.old_password }}
+                                    <span class="text-danger">{{ change_password_form.old_password.errors }}</span>
+                                </div>
+                                <div class="">
+                                    <label for="{{ change_password_form.new_password1.label }}">
+                                        {{ change_password_form.new_password1.label }}
+                                    </label>
+                                    <p>{{ change_password_form.new_password1 }}
+                                    <span class="text-danger">{{ change_password_form.new_password1.errors }}</span>
+                                </div>
+                                <div class="">
+                                    <label for="{{ change_password_form.new_password2.label }}">
+                                        {{ change_password_form.new_password2.label }}
+                                    </label>
+                                    <p>{{ change_password_form.new_password2 }}</p>
+                                    <span class="text-danger">{{ change_password_form.new_password2.errors }}</span>
+                                </div>
+                                <div class="">
+                                    <p>{{ change_password_form.new_password1.help_text|safe }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-info">Update</button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <div class="card-header mb-4">
+                                <h3 class="card-title">Reset Password</h3>
+                            </div>
+                            <form action="{% url 'members:create-password' pk=member.pk %}" method="post">{% csrf_token %}
+                                <div class="">
+                                    <label for="{{ create_password_form.new_password1.label }}">
+                                        {{ create_password_form.new_password1.label }}
+                                    </label>
+                                    <p>{{ create_password_form.new_password1 }}
+                                    <span class="text-danger">{{ create_password_form.new_password1.errors }}</span>
+                                </div>
+                                <div class="">
+                                    <label for="{{ create_password_form.new_password2.label }}">
+                                        {{ create_password_form.new_password2.label }}
+                                    </label>
+                                    <p>{{ create_password_form.new_password2 }}</p>
+                                    <span class="text-danger">{{ create_password_form.new_password2.errors }}</span>
+                                </div>
+                                <div class="">
+                                    <p class="">
+                                        {{ create_password_form.new_password1.help_text|safe }}
+                                    </p>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-info">Create</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-xlg-9 col-md-7">
+                <div class="card">
+                    <div class="card-block">
+                        <form action="{% url 'members:edit-member' pk=member.pk %}" method="post" class="form-horizontal form-material" enctype="multipart/form-data">{% csrf_token %}
+                            <div class="form-group">
+                                <label for="{{ profile_form.first_name.label }}" class="col-md-12">{{ profile_form.first_name.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.first_name }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.first_name.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.last_name.label }}" class="col-md-12">{{ profile_form.last_name.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.last_name }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.last_name.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.email.label }}" class="col-md-12">{{ profile_form.email.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.email }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.email.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.phone_number.label }}" class="col-md-12">{{ profile_form.phone_number.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.phone_number }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.phone_number.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.nationality.label }}" class="col-md-12">{{ profile_form.nationality.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.nationality }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.nationality.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.national_id.label }}" class="col-md-12">{{ profile_form.national_id.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.national_id }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.national_id.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.dob.label }}" class="col-md-12">{{ profile_form.dob.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.dob }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.dob.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob_id" class="col-md-12">{{ profile_form.postal_address.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.postal_address }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.postal_address.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.city.label }}" class="col-md-12">{{ profile_form.city.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.city }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.city.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.street.label }}" class="col-md-12">{{ profile_form.street.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.street }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.street.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.house.label }}" class="col-md-12">{{ profile_form.house.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.house }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.house.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.occupation.label }}" class="col-md-12">{{ profile_form.occupation.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.occupation }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.occupation.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{ profile_form.employer.label }}" class="col-md-12">{{ profile_form.employer.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.employer }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.employer.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob_id" class="col-md-12">{{ profile_form.marital_status.label }}</label>
+                                <div class="col-md-12">
+                                    {{ profile_form.marital_status }}
+                                </div>
+                                <span class="text-danger text-sm-left text-muted">{{ profile_form.marital_status.errors }}</span>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-success">Update Profile</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Upload photo-->
+    <div class="modal fade" id="uploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadPhotoModalLabel">Upload New Profile Photo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="{% url 'members:upload-profile-photo' pk=member.pk %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <p>{{ form.profile_photo }}</p>
+                  <div class="row justify-content-around">
+                      <div class="col-6">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      </div>
+                      <div class="col-6">
+                          <button type="submit" class="btn btn-primary">Upload</button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Upload ID-->
+    <div class="modal fade" id="uploadIDModal" tabindex="-1" role="dialog" aria-labelledby="uploadIDModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadIDModalLabel">Upload Scanned ID</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="{% url 'members:upload-scanned-id' pk=member.pk %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <p>{{ scanned_id_form }}</p>
+                  <div class="row justify-content-around">
+                      <div class="col-6">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      </div>
+                      <div class="col-6">
+                          <button type="submit" class="btn btn-primary">Upload</button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- start deactivate-member-modal -->
+    <div id="deactivate-member-{{ member.pk }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Deactivate Member {{ member.first_name }} </h4>
+                </div>
+                <div class="modal-body">
+                    <h3 class="text-danger">Are you sure you want to deactivate {{ member.first_name }} {{ member.last_name }} ?</h3>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'members:deactivate-account' pk=member.pk %}" method="post" >
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit"> Deactivate </button>
+                        <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                    </form>
+                </div>
+            </div><!-- .modal-content -->
+        </div>
+    </div>
+    <!-- start activate-member-modal -->
+    <div id="activate-member-{{ member.pk }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Activate {{ member.get_full_name }}'s Account </h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'members:activate-account' pk=member.pk %}" method="post" >
+                        {% csrf_token %}
+                        <p class="text-left">
+                            {{ activate_account_form }}
+                        </p>
+
+                        <button class="btn btn-info" type="submit"> Activate </button>
+                        <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                    </form>
+                </div>
+                <div class="modal-footer" ></div>
+            </div><!-- .modal-content -->
+        </div>
+    </div>
+{% endblock page_content %}

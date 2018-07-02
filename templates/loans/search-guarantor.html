@@ -1,0 +1,125 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}{{ loan_request }} Request Guarantor{% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'loans:loans' %}">Loans</a></li>
+                    <li class="breadcrumb-item">Request Guarantor</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+    {{ formd }}
+    {{ guarantor_test }}
+        <div class="row">
+            <div class="col-lg-6 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center pt-3">
+                            <h4 class="card-title">Request Guarantor for {{ loan_request }} </h4>
+                        </div>
+                        <div class="card-body">
+                            <form id="search-member" action="{% url 'loans:search-guarantor' pk=loan_request.pk %}">{% csrf_token %}
+                                <div class="row mt-4">
+                                    <div class="col-lg-8">
+                                        <input style="width: 100%;" type="text" id="member_number" name="member_number" required>
+                                        <label for="member_number">Guarantor's membership number</label>
+                                    </div>
+                                    <div class="col-lg-4" id="search-btn">
+                                        <button class="btn btn-info" type="submit">
+                                            <i class="fa fa-search"></i> Search
+                                        </button>
+                                        <a href="{% url 'loans:search-guarantor' pk=loan_request.pk %}">reset</a>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div id="search-results"></div>
+                            {% if loan_request.guarantors|length < 6 %}
+                                <div class="mb-4 mt-4">
+                                {# Only show form before loan request is approved  #}
+                                    {% if loan_request.status == 'pending' %}
+                                        <form action="{% url 'loans:request-guarantor' pk=loan_request.pk %}" method="post" id="guarantor-form">{% csrf_token %}
+                                            {{ guarantor_form.as_p }}
+                                            <button class="btn btn-info" type="submit">
+                                                Send request <i class="fa fa-send"></i>
+                                            </button>
+                                        </form>
+                                    {% elif loan_request.status == 'rejected' %}
+                                        <div class="alert alert-danger">Loan application was rejected.</div>
+                                    {% else %}
+                                        <div class="alert alert-danger">Loan is already approved.</div>
+                                    {% endif %}
+                                </div>
+                            {% else  %}
+                                <div class="alert alert-info">You have requested more than 6 guarantors</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center pt-3">
+                            <h4 class="card-title">Guarantors</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if loan_request.guarantors|length > 0 %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <th>Member</th><th>#</th><th>Amount</th><th>Status</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for guarantor in loan_request.guarantors %}
+                                            <tr>
+                                                <td>{{ guarantor.guarantor.get_full_name }}</td>
+                                                <td>{{ guarantor.guarantor.member_number }}</td>
+                                                <td>{{ guarantor.amount }}</td>
+                                                <td>{{ guarantor.status }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                            {% else %}
+                                <div class="alert alert-info mt-4">
+                                    You have not requested any guarantors for this loan
+                                </div>
+                            {% endif %}
+
+                            <a class="btn btn-block btn-info mt-4" href="{% url 'loans:loan-status' pk=request.user.pk %}">
+                                View loan status
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if members|length > 0 %}
+            <div class="table table-responsive table-striped">
+                <table>
+                    <thead>
+                        <th>Name</th><th>Member number</th><th>Phone number</th>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.first_name }} {{ member.last_name }}</td>
+                                <td>{{ member.pk }} </td>
+                                <td>{{ member.phone_number }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Shivala Data Solutions LTD.">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/favicon.png' %}">
+    <title>{% block page_title %}{% endblock page_title %} :: openSACCO</title>
+    <link rel="stylesheet" href="{% static 'vendor/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}">
+    <link href="{% static 'css/auth_style.css' %}" rel="stylesheet">
+
+    <!-- You can change the theme colors from here -->
+    <link href="{% static 'css/colors/blue.css' %}" id="theme" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" id="theme" rel="stylesheet">
+</head>
+
+<body class="fix-header fix-sidebar card-no-border">
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
+    </div>
+    <div id="main-wrapper">
+        <header class="topbar">
+            {% include 'members/auth_navigation.html' %}
+        </header>
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            {% include 'members/auth_sidebar.html' %}
+        </aside>
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                {% block page_content %}
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-block">
+                                <select class="custom-select pull-right">
+                                    <option selected>January</option>
+                                    <option value="1">February</option>
+                                    <option value="2">March</option>
+                                    <option value="3">April</option>
+                                </select>
+                                <h4 class="card-title">Projects of the Month</h4>
+                                <div class="table-responsive m-t-40">
+                                    <table class="table stylish-table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Assigned</th>
+                                                <th>Name</th>
+                                                <th>Budget</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td style="width:50px;"><span class="round">S</span></td>
+                                                <td>
+                                                    <h6>Sunil Joshi</h6><small class="text-muted">Web Designer</small></td>
+                                                <td>Elite Admin</td>
+                                                <td>3.9K</td>
+                                            </tr>
+                                            <tr class="active">
+                                                <td><span class="round"><img src="{% static 'assets/images/users/2.jpg' %}" alt="user" width="50" /></span></td>
+                                                <td>
+                                                    <h6>Andrew</h6><small class="text-muted">Project Manager</small></td>
+                                                <td>Real Homes</td>
+                                                <td>$23.9K</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="round round-success">B</span></td>
+                                                <td>
+                                                    <h6>Bhavesh patel</h6><small class="text-muted">Developer</small></td>
+                                                <td>MedicalPro Theme</td>
+                                                <td>$12.9K</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="round round-primary">N</span></td>
+                                                <td>
+                                                    <h6>Nirav Joshi</h6><small class="text-muted">Frontend Eng</small></td>
+                                                <td>Elite Admin</td>
+                                                <td>$10.9K</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="round round-warning">M</span></td>
+                                                <td>
+                                                    <h6>Micheal Doe</h6><small class="text-muted">Content Writer</small></td>
+                                                <td>Helping Hands</td>
+                                                <td>$12.9K</td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="round round-danger">N</span></td>
+                                                <td>
+                                                    <h6>Johnathan</h6><small class="text-muted">Graphic</small></td>
+                                                <td>Digital Agency</td>
+                                                <td>$2.6K</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock page_content %}
+            </div>
+            <footer class="footer text-center">
+                <div class="row">
+              <div class="col-md-6 text-left">
+                <small>Copyright &copy; openSACCO, {% now "Y" %}</small>
+              </div>
+              <div class="col-md-6 text-right">
+                <small>Powered by <a target="_blank" href="//networkbooks.co.ke">openSACCO Platform</a>.</small>
+              </div>
+          </div>
+
+            </footer>
+        </div>
+    </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery/jquery-ui-1.12.1.custom/jquery-ui.min.js' %}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{% static 'vendor/bootstrap/js/tether.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="{% static 'js/jquery.slimscroll.js' %}"></script>
+    <!--Wave Effects -->
+    <script src="{% static 'js/waves.js' %}"></script>
+    <!--Menu sidebar -->
+    <script src="{% static 'js/sidebarmenu.js' %}"></script>
+    <!--stickey kit -->
+    <script src="{% static 'vendor/sticky-kit-master/dist/sticky-kit.min.js' %}"></script>
+    <!--Custom JavaScript -->
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'vendor/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'vendor/flot.tooltip/js/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'js/flot-data.js' %}"></script>
+    <script src="{% static 'vendor/styleswitcher/jQuery.style.switcher.js' %}"></script>
+    <script type="text/javascript" charset="utf8" src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+<script>
+  $( function() {
+    $( "#draggable" ).draggable();
+  } );
+  </script>
+
+</body>
+
+</html>

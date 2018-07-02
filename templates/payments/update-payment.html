@@ -1,0 +1,43 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Update Payment {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'payments:list-types' %}">Payments</a></li>
+                    <li class="breadcrumb-item">Update payment</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center">
+                            <h3 class="card-title pt-2">Update Payment </h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="" class="pt-3">{% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                <div class="card">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

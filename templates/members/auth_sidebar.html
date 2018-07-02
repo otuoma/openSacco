@@ -1,0 +1,129 @@
+<div class="scroll-sidebar">
+    <nav class="sidebar-nav">
+        <ul id="sidebarnav">
+            <li>
+                <a href="#membersSubmenu" class="waves-effect">
+                    <i class="fa fa-users m-r-10" aria-hidden="true"></i>Members
+                </a>
+                <ul class="collapse list-unstyled" id="membersSubmenu">
+                    <li><a href="{% url 'members:directory' %}">View Members</a></li>
+                    {% if perms.can_create_member %}
+                        <li><a href="{% url 'members:admin-create-member' %}">Add New</a></li>
+                        <li><a href="{% url 'members:directory' %}?list=new">New Applications</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% if perms.can_change_shares %}
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Shares
+                </a>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    <li><a href="{% url 'shares:shares-home' %}">Shares Setup</a></li>
+                </ul>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    <li><a href="{% url 'shares:share-distribution' %}">Share Distribution</a></li>
+                </ul>
+            </li>
+        {% endif %}
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Contributions
+                </a>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    {% if perms.can_view_payment %}
+                    <li><a href="{% url 'payments:list-payments' %}">View Contributions</a></li>
+                    {% endif %}
+                    {% if perms.can_add_payment %}
+                        <li><a href="{% url 'payments:upload-contributions' %}">Upload Contributions</a></li>
+                    {% endif %}
+                        <li><a href="{% url 'payments:list-types' %}">Contribution Accounts</a></li>
+                        <li><a href="{% url 'payments:statement' pk=request.user.pk %}">My Statement</a></li>
+                    {% if perms.can_add_paymenttype %}
+                        <li><a href="{% url 'payments:make-payment-type' %}">Add Account</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Loans
+                </a>
+                <ul class="collapse list-unstyled" id="loansSubmenu">
+                    <li><a href="{% url 'loans:list-loans' %}">Loan Products</a></li>
+                    {% if perms.loans.add_loan %}
+                        <li><a href="{% url 'loans:create-loan' %}">Add New</a></li>
+                    {% endif %}
+                    {% if perms.loans.view_loans %}
+                        <li><a href="{% url 'loans:list-applications' %}">View Applications</a></li>
+                    {% endif %}
+                    {% if perms.loans.view_loan_disbursements %}
+                        <li><a href="{% url 'loans:list-disbursements' %}">View Disbursements</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'loans:apply-loan' %}">Apply Loan</a></li>
+                    <li><a href="{% url 'loans:loan-status' pk=request.user.pk %}">My Loan Status</a></li>
+                    <li><a href="{% url 'loans:armotization-schedule' %}">Loan Calculator</a></li>
+                    <li><a href="{% url 'loans:list-guarantee-requests' %}">Guarantor requests</a></li>
+
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Dividends
+                </a>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    <li><a href="{% url 'dividends:list-issues' %}">View Issues</a></li>
+                    {% if perms.can_add_dividendissue %}
+                    <li><a href="{% url 'dividends:create-issue' %}">Add New</a></li>
+                    {% endif %}
+                {% if perms.can_change_loandisbursements %}
+                    <li><a href="{% url 'dividends:calculate-dividends' %}">Process Dividends</a></li>
+                {% endif %}
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-money m-r-10" aria-hidden="true"></i>Fines</a>
+                <ul class="collapse list-unstyled" id="finessSubmenu">
+                    <li><a href="{% url 'fines:list-member-fines' pk=request.user.pk %}">My Fines</a></li>
+                    {% if perms.fines.change_fine %}
+                        <li><a href="{% url 'fines:list-fines' %}">Members Fines</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% if perms.pettycash.change_expenditure %}
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Petty Cash
+                </a>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    <li><a href="{% url 'pettycash:list-expenditures' %}">View Expenditures</a></li>
+                    {% if perms.can_view_pettycash %}
+                    <li><a href="{% url 'pettycash:add-expenditure' %}">Add New</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+        {% if perms.pettycash.change_chartofaccounts %}
+            <li>
+                <a href="#" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Accounting
+                </a>
+                <ul class="collapse list-unstyled" id="contributionsSubmenu">
+                    <li><a href="{% url 'accounting:chart-of-accounts' %}">Chart of Accounts</a></li>
+{#                    <li><a href="#">General Ledger</a></li>#}
+                    <li><a href="{% url 'accounting:trial-balance' %}">Trial Balance</a></li>
+
+                </ul>
+            </li>
+        {% endif %}
+        {% if request.user.is_superuser %}
+            <li>
+                <a href="/admin" class="waves-effect"><i class="fa fa-table m-r-10" aria-hidden="true"></i>
+                    Admin
+                </a>
+            </li>
+        {% endif%}
+        </ul>
+    </nav>
+    <!-- End Sidebar navigation -->
+</div>
+<!-- End Sidebar scroll-->

@@ -1,0 +1,92 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Trial Balance {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Trial Balance</h2>
+      </div>
+    <div class="card-body p-2">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            {% if trial_balance %}
+                <form method="post" action="">{% csrf_token %}
+                    <table id="expenditure-filters-form">
+                        <tr>
+                            <td>From</td>
+                            <td>{{ form.date_from }}</td>
+                            <td>To</td>
+                            <td>{{ form.date_to }}</td>
+                            <td><button type="submit" class="btn btn-info">Update</button></td>
+                            <td>
+                                <a href="{% url 'pettycash:list-expenditures' %}" class="btn btn-success"> Reset </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'pettycash:add-expenditure' %}" class="btn btn-danger"> Add New </a>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <table class="table table-responsive table-striped mt-3">
+                <tr>
+                    <th>Date</th><th>Member</th><th>Staff</th><th>Module</th><th>Description</th><th style="text-align: right">Credit</th><th style="text-align: right">Debit</th>
+                </tr>
+                    {% for item in trial_balance %}
+                        <tr>
+                            <td>{{ item.timestamp|date:'Y-m-d H:i' }}</td>
+                            <td>{{ item.member }}</td>
+                            <td>{{ item.staff }}</td>
+                            <td>{{ item.module }}</td>
+                            <td>{{ item.description }}</td>
+                            <td style="text-align: right">
+                                {{ item.credit }}
+                            </td>
+                            <td style="text-align: right">
+                                {{ item.debit }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="alert alert-info"> No items found in trial balance.</div>
+            {% endif %}
+        </div>
+
+    </div>
+
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if trial_balance.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ trial_balance.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in trial_balance.paginator.page_range %}
+                    <li {% if paymenttype_list.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if trial_balance.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ trial_balance.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ trial_balance.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

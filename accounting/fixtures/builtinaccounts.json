@@ -1,0 +1,58 @@
+[
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Shares",
+    "slug": "shares"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Loan processing fees",
+    "slug": "loan_processing_fees"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Loan disbursements",
+    "slug": "loan_disbursements"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Loan repayments",
+    "slug": "loan_repayments"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Petty cash",
+    "slug": "petty_cash"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Fines paid",
+    "slug": "fines_paid"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Fines unpaid",
+    "slug": "fines_unpaid"
+  }
+},
+{
+  "model": "accounting.builtinaccount",
+  "fields": {
+    "account_name": "Dividend disbursements",
+    "slug": "dividend_disbursements"
+  }
+}
+]

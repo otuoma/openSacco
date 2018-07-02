@@ -1,0 +1,85 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}{{ member.get_full_name }} Profile {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'members:directory' %}">Members</a></li>
+                    <li class="breadcrumb-item">Add New</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-5 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center">
+                            <h4 class="card-title pt-10">Add New Member</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="mt-2">
+                            Last member <strong>{{ last_member.member_number }}</strong>
+                            ({{ last_member.last_name }})
+                            </p>
+                            <hr>
+                            <form method="post" action="{% url 'members:admin-create-member' %}" class="pt-3">{% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Create</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center">
+                            <h4 class="card-title pt-10">Upload from Excel </h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'members:bulk-upload-members' %}" class="pt-3" enctype="multipart/form-data">{% csrf_token %}
+                                {{ bulk_form.as_p }}
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Upload</button>
+                                </div>
+                            </form>
+                            <hr>
+                            <h4 class="card-title pt-10">Instructions </h4>
+                            <ol>
+                                <li>Download a sample excel file with the required headers <a href="{% static 'downloads/members-list.xlsx' %}">here</a></li>
+                                <li>Fill in members details, each member per row</li>
+                                <li>Click on choose file to attach the file then click on upload</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if members|length > 0 %}
+            <div class="table table-responsive table-striped">
+                <table>
+                    <thead>
+                        <th>Name</th><th>Member number</th><th>Phone number</th>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.first_name }} {{ member.last_name }}</td>
+                                <td>{{ member.pk }} </td>
+                                <td>{{ member.phone_number }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock page_content %}

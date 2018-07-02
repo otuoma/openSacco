@@ -1,0 +1,29 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Payment Types {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="card-title">Delete {{ paymenttype.payment_type }}</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+        <h2 class="text-danger ml-xl-5 ml-md-5">Are you sure you want to proceed ?</h2>
+        <div class="row m-xl-5 m-md-5">
+            <div class="col-3">
+                <a href="{% url 'payments:list-types' %}" class="btn btn-success"> Cancel </a>
+            </div>
+            <div class="col-2">
+                <form action="{% url 'payments:delete-type' pk=paymenttype.pk %}" method="post">{% csrf_token %}
+                    <button type="submit" class="btn btn-danger"> Proceed <i class="fa fa-trash-o"></i> </button>
+                </form>
+            </div>
+
+        </div>
+      </div>
+    <div class="card-footer">
+
+
+    </div>
+    </div>
+{% endblock page_content %}

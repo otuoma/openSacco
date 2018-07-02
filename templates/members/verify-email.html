@@ -1,0 +1,26 @@
+{% extends 'members/alt_base.html' %}
+{% block page_title %} Verify Email {% endblock page_title %}
+
+{% block page-content %}
+
+    <section class="bg-primary text-white mb-0" id="about">
+      <div class="container">
+        <h2 class="text-center text-uppercase text-white">Just one more step !</h2>
+        <hr class="star-light mb-5">
+          {% include 'messages.html' %}
+        <div class="row">
+          <div class="col-lg-12 ml-auto">
+            <p class="lead text-center">
+                Thank you for your interest in joining We Can Youth SACCO. Please verify your email to proceed.
+            </p>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <a class="btn btn-xl btn-outline-light" href="#">
+            <i class="fa fa-download mr-2"></i>
+            Download Now!
+          </a>
+        </div>
+      </div>
+    </section>
+{% endblock page-content %}

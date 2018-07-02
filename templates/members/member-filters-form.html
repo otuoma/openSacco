@@ -1,0 +1,27 @@
+<form action="{% url 'members:directory' %}" method="post" id="filters-form">{% csrf_token %}
+    <div class="row non-print-item">
+        <div class="col-md-3">
+            <input type="text" style="margin: 0;" class="form-control" placeholder="member number" name="member_number">
+        </div>
+        <div class="col-md-1" style="padding: 0;">
+            <input class="btn btn-info" type="submit" value="Search">
+        </div>
+        <div class="col-md-8">
+            <ul class="nav nav-pills pull-right" role="tablist">
+                <li role="presentation" class="">
+                    <a href="{% url 'members:directory' %}?list=active">Active <span class="badge badge-primary">{{ active_members }}</span></a>
+                </li>
+                <li role="presentation" class="">
+                    <a href="{% url 'members:directory' %}?list=new">Inactive <span class="badge badge-info">{{ inactive_members }}</span></a>
+                </li>
+                <li role="presentation" class="">
+                    <a href="{% url 'members:directory' %}?list=staff">Staff <span class="badge">{{ staff_members }}</span></a>
+                </li>
+                <li role="presentation" class="">
+                    <a href="{% url 'members:filter-members-list' %}" class="btn btn-info">print</a>
+                </li>
+            </ul>
+             <span class=""></span>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,53 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Member Fines {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+        <a class="nav-link active" href="{% url 'members:profile' pk=member.pk %}">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'fines:create-fine' pk=member.pk %}">Add Fine</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'fines:list-fines' %}">Fines Summary</a>
+      </li>
+    </ul>
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Pay Fine for {{ member.get_full_name }}</h2>
+      </div>
+
+    <div class="card-body" style="">
+        <div class="row">
+            <div class="col-4 p-4 pl-5">
+                <form method="post" action="{% url 'fines:pay-fine' pk=member.pk %}">{% csrf_token %}
+                    {{ form.as_p }}
+                    <p class="text-right">
+                        <button type="submit" class="btn btn-info">
+                            Create <i class="fa fa-send"></i>
+                        </button>
+                    </p>
+                </form>
+            </div>
+            <div class="col-2 p-4 bg-light text-center">
+                <h4>Outstanding</h4>
+                {% if amount_outstanding > 0 %}
+                    <span class="text-danger">{{ amount_outstanding }}</span>
+                {% else %}
+                    <span class="text-success">{{ amount_outstanding }}</span>
+                {% endif %}
+            </div>
+            <div class="col-6 p-4">
+                <h4>Not the member you're expecting?</h4>
+                <ol>
+                    <li>Open the members profile page</li>
+                    <li>Select actions</li>
+                    <li>Then click on <code>Fines</code></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer"> <p>&nbsp;</p> </div>
+    </div>
+{% endblock page_content %}

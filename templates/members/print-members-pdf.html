@@ -1,0 +1,45 @@
+{% extends 'easy_pdf/base.html' %}
+
+{% block extra_style %}
+    <style type="text/css">
+        body{
+            color: #0f8edd;
+        }
+    .bg-grey{
+        background-color: #eee;
+        padding: 5px;
+        padding-top:12px;
+    }
+    #table-header{font-weight:bold;}
+    td {padding: 2px;}
+    #table-header td{padding: 5px auto 2px auto;}
+
+    </style>
+{% endblock extra_style %}
+
+{% block content %}
+{#    <img src="{{ resource.image.url|get64 }}img/wecan/wecan-logo-1.png" />#}
+    {% include 'pdf-letter-head.html' %}
+    <h1 class="bg-grey"><i class="fa fa-ok"></i>
+        {{ title }}</h1>
+    {% if members_list|length > 0 %}
+        <table>
+        <tr id="table-header">
+            <td>Name</td><td>#</td><td>Joined</td><td>Active</td>
+        </tr>
+        <tbody>
+            {% for member in members_list %}
+                <tr>
+                    <td>{{ member.get_full_name }}</td>
+                    <td>{{ member.member_number }}</td>
+                    <td>{{ member.date_joined|date:"d-m-Y H:i" }}</td>
+                    <td>{{ member.is_active }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+
+    {% else %}
+        <div class="">No Members Found.</div>
+    {% endif %}
+{% endblock content %}

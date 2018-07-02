@@ -1,0 +1,143 @@
+{% extends 'easy_pdf/base.html' %}
+
+{% block extra_style %}
+    <style type="text/css">
+        body{
+            color: #0f8edd;
+        }
+        .table{
+            border-collapse: collapse;
+            background-color: transparent;
+        }
+        .table td, .table th {
+            border-color: #f3f1f1;
+        }
+        .table-responsive {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
+        .table-bordered {
+            border: 1px solid #eceeef;
+        }
+        .bg-grey{
+            background-color: #eee;
+        }
+        .field-value{
+            color: #0b0b0b;
+        }
+
+    td {padding: 4px;}
+    #table-header{
+        padding: 10px auto 1px 10px;
+        font-weight:bold;
+    }
+    .field-set{
+        background-color: #eee;
+        color: #0b0b0b;
+        padding: auto;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    </style>
+{% endblock extra_style %}
+
+{% block content %}
+{#    <img src="{{ resource.image.url|get64 }}img/wecan/wecan-logo-1.png" />#}
+    {% include 'pdf-letter-head.html' %}
+    <h1 class="bg-grey" id="table-header">
+        {{ title }}
+    </h1>
+
+    {% if loan_request %}
+        <table class="table table-bordered table-responsive" >
+            <tr id=""><td class="field-set bg-grey" colspan="3">Applicant's Details</td></tr>
+            <tr>
+                <td>First Name : <span class="field-value"> {{ loan_request.requested_by.first_name }}</span></td>
+                <td>Other Names : <span class="field-value"> {{ loan_request.requested_by.last_name }}</span></td>
+                <td>Member number : <span class="field-value"> {{ loan_request.requested_by.member_number }}</span></td>
+            </tr>
+            <tr>
+                <td>Phone : <span class="field-value"> {{ loan_request.requested_by.phone_number }}</span></td>
+                <td>ID Number : <span class="field-value"> {{ loan_request.requested_by.national_id }}</span></td>
+                <td>Email : <span class="field-value"> {{ loan_request.requested_by.email }} </span></td>
+            </tr>
+            <tr>
+                <td>Date of birth : <span class="field-value"> {{ loan_request.requested_by.dob|date:'d/m/Y' }}</span></td>
+                <td>Address : <span class="field-value">
+                    {% if loan_request.requested_by.postal_address %}
+                        {{ loan_request.requested_by.postal_address }}
+                    {% endif %}
+                    {% if loan_request.requested_by.city %}
+                        , {{ loan_request.requested_by.city }}
+                    {% endif %}
+                    {% if loan_request.requested_by.street %}
+                        , {{ loan_request.requested_by.street }}
+                    {% endif %}
+                    {% if loan_request.requested_by.house %}
+                        , {{ loan_request.requested_by.house }}
+                    {% endif %}</span>
+                </td>
+                <td>Member since : <span class="field-value"> {{ loan_request.requested_by.date_joined|date:'d/m/Y' }}</span></td>
+            </tr>
+            <tr>
+                <td>Occupation : <span class="field-value"> {{ loan_request.requested_by.occupation }}</span></td>
+                <td>Employer : <span class="field-value"> {{ loan_request.requested_by.employer }}</span></td>
+                <td>Marital status <span class="field-value"> {{ loan_request.requested_by.marital_status|capfirst }}</span></td>
+            </tr>
+        </table>
+        <table class="table table-bordered table-responsive" style="margin-top: 6px;">
+            <tr id=""><td class="field-set bg-grey" colspan="3" style="margin-top: 6px;">Loan Details</td></tr>
+            <tr>
+                <td>Amount requested :<span class="field-value"> {{ loan_request.amount_requested }}</span></td>
+                <td>Date :<span class="field-value"> {{ loan_request.date_requested|date:'d/m/Y' }}</span></td>
+                <td>Status :<span class="field-value"> {{ loan_request.status|capfirst }}</span></td>
+            </tr>
+            {% if loan_request.details %}
+                <tr id="">
+                    <td class="" colspan="3">Other details : <span class="field-value">{{ loan_request.details }}</span></td>
+                </tr>
+            {% endif %}
+        </table>
+            {% if guarantors %}
+                <table class="table table-bordered table-responsive" style="margin-top: 6px;">
+                    <tr id="">
+                        <td class="field-set bg-grey" colspan="3">Guarantors</td>
+                    </tr>
+                    {% for guarantor in guarantors %}
+                        <tr>
+                            <td>{{ guarantor.guarantor.get_full_name }} : {{ guarantor.guarantor.member_number }}</td>
+                            <td>{{ guarantor.amount }}</td>
+                            <td>{{ guarantor.status|capfirst }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% endif %}
+            {% if disbursement %}
+                <table class="table table-bordered table-responsive" style="margin-top: 6px;">
+                    <tr id="">
+                        <td class="field-set bg-grey" colspan="3">Disbursement Details</td>
+                    </tr>
+                    <tr>
+                        <td>Amount disbursed : <span class="field-value"> {{ disbursement.amount_disbursed }}</span></td>
+                        <td>Processing fee : <span class="field-value"> {{ disbursement.processing_fee }}</span></td>
+                        <td>Date due : <span class="field-value"> {{ loan_request.first_due }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Rate : <span class="field-value"> {{ disbursement.interest_rate }} %</span></td>
+                        <td>Type : <span class="field-value"> {{ disbursement.interest_on|capfirst }}</span></td>
+                        <td>Period : <span class="field-value"> {{ disbursement.repayment_period }} {{ disbursement.repayment_period_unit }}</span></td>
+                    </tr>
+                </table>
+            {% endif %}
+
+    {% else %}
+        <div class="">No details found.</div>
+    {% endif %}
+    <div style="bottom: 0px;margin-top:20px; padding-top:20px; border-top: solid 2px #eee;">
+        NOTE: This document is system generated, on {% now "d-m-Y H:i:s" %}. To verify it please contact WeCan SACCO office.
+    </div>
+{% endblock content %}

@@ -1,0 +1,74 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Disbursements {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Loan Disbursements</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+      {% if disbursements.count > 0 %}
+        <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>Beneficiary</th>
+                <th>Requested</th>
+                <th>Amount</th>
+                <th>Disbursed</th>
+                <th style="text-align: right;">Amount</th>
+            </tr>
+        </thead>
+        {% for disbursement in disbursements %}
+            <tr>
+                <td>
+                    <a href="{% url 'loans:loan-status' pk=disbursement.loan_request.requested_by_id %}">
+                        {{ disbursement.loan_request.requested_by.get_full_name }}
+                    </a>
+                </td>
+                <td>{{ disbursement.loan_request.date_requested|date:'d-M-Y H:i:s' }}</td>
+                <td style="float: left">
+                    {{ disbursement.loan_request.amount_requested }}
+                </td>
+                <td>{{ disbursement.date_disbursed|date:'d-M-Y H:i:s' }}</td>
+                <td style="text-align: right;">{{ disbursement.amount_disbursed }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <div class="alert alert-info">No loan disbursements have been made yet ... </div>
+    {% endif %}
+
+    </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if disbursements.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ disbursements.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in disbursements.paginator.page_range %}
+                    <li {% if disbursements.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if disbursements.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ disbursements.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ disbursements.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

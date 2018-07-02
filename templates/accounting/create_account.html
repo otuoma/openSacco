@@ -1,0 +1,83 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Create Account {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        {% include 'messages.html' %}
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:chart-of-accounts' %}">
+                    <i class="fa fa-list"></i> Chart of Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account-group' %}"><i class="fa fa-plus"></i> Create Group</a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-lg-7 col-md-7">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Accounts List</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            {% if accounts_list|length > 0 %}
+                                <table class="table table-responsive table-striped">
+                                <thead>
+                                    <th>Account</th><th>Increases</th><th>Type</th>
+                                </thead>
+                                    {% for account in accounts_list %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'accounting:update-account' pk=account.pk %}">
+                                                    {{ account.account_number }}: {{ account.account_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ account.increases|capfirst }}</td>
+                                            <td>{{ account.account_type|capfirst }}</td>
+                                            <td class="">
+                                                {% if account.inherits == 'none' %}
+                                                    <a href="{% url 'accounting:account-transactions' pk=account.pk %}">
+                                                        <i class="fa fa-th-list"></i>
+                                                    </a>
+                                                {% else %}
+                                                    --
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No accounts exist here yet ...
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Create New Account</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            <form method="post" class="" action="{% url 'accounting:create-account' %}">{% csrf_token %}
+                            {{ form.as_p }}
+                                <p class="text-right">
+                                <button type="submit" class="form-group btn btn-info">Create <i class="fa fa-send"></i></button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

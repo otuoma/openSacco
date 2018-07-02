@@ -1,0 +1,133 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Member contributions {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="member-functions">
+        <ul class="nav nav-pills justify-content-end pb-1">
+            <li class="nav-item">
+                <a class="nav-link " href="#">Total: <strong>KSHS {{ total_payments.amount__sum }}</strong></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Contributions: <strong>KSHS {{ total_contributions.amount__sum }}</strong></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#">Loans: <strong>KSHS {{ total_loans_repaid.amount__sum }}</strong></a>
+            </li>
+            <li class="nav-item">
+                <a href="#" data-toggle="modal" data-target="#filtersModal">
+                    <i class="fa fa-print" aria-hidden="true"></i> Print
+                </a>
+            </li>
+        </ul>
+        <!-- Modal -->
+        <div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <form action="{% url 'payments:print-contributions' %}" method="get" class="modal-content" id="filters-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-left" id="myModalLabel">Create Print Filters on Contributions</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ filters_form }}
+                        <div>
+                            <label for="date_from">Date from: </label>
+                            <input id="date_from" name="date_from" type="text" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="date_to">Date to: </label>
+                            <input id="date_to" name="date_to" type="text" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- end-Modal -->
+    </div>
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Member Contributions
+            {% if date_from %} from {{ date_from }}{% endif %}
+            {% if date_to %} to {{ date_to }}
+            {% else %}
+                as at {% now "jS F Y H:i:s" %}
+            {% endif %}
+        </h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if contributions|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover table-striped">
+                  <table class="table">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Date</th><th>Member</th><th class="text-right">Amount</th><th>For</th><th>Staff</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for contribution in contributions %}
+                          <tr>
+                              <td>
+                                  {% if perms.payments.update_payment %}
+                                      <a href="{% url 'payments:update-payment' pk=contribution.pk %}" >
+                                        {{ contribution.date|date:'d/m/Y H:i:s' }}
+                                      </a>
+                                  {% else %}
+                                        {{ contribution.date|date:'d/m/Y H:i:s' }}
+                                  {% endif %}
+                              </td>
+                              <td>
+                                  <a href="{% url 'members:profile' pk=contribution.member.pk %}" title="view statement">
+                                      {{ contribution.member.get_full_name }}
+                                  </a>
+                              </td>
+                              <td class="text-right">{{ contribution.amount }}</td>
+                              <td>{{ contribution.payment_type }}</td>
+                              <td>{{ contribution.paid_by }}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+                <h2> No payments yet</h2>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if contributions.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ contributions.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in contributions.paginator.page_range %}
+                    <li {% if contributions.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if contributions.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ contributions.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ contributions.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    </div>
+{% endblock page_content %}

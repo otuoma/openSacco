@@ -1,0 +1,45 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Inactive Members {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Inactive Members</h2>
+      </div>
+    <div class="card-body" style="padding: 4px;">
+          {% if members_list|length > 0 %}
+              {% include 'members/member-filters-form.html' %}
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Name</th><th>Member number</th><th>Email</th><th>Phone</th><th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for member in members_list %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'members:profile' pk=member.pk %}">
+                                    {{ member.get_full_name }}
+                                </a>
+                            </td>
+                            <td>{{ member.member_number }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.phone_number }}</td>
+                        <td>{% if member.is_active %}Active{% else %}Inactive{% endif %}</td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+                <h2> No members have been added yet</h2>
+              </div>
+          {% endif %}
+      </div>
+    </div>
+{% endblock page_content %}

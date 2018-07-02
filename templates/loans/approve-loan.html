@@ -1,0 +1,93 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Approve Loan Applications {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Approve Loan Application</h2>
+      </div>
+
+    <div class="card-body p-2">
+        {% if loan %}
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-responsive table-striped">
+                    <tr>
+                        <td class="text-info">Requested by</td>
+                        <td>: <a href="{% url 'members:profile' pk=loan.requested_by_id %}"> {{ loan.requested_by.get_full_name }}</a></td>
+                    </tr>
+                    <tr><td class="text-info">Date Requested</td><td>: {{ loan.date_requested|date:'d-M-Y H:i:s' }}</td></tr>
+                    <tr><td class="text-info">Amount Requested </td><td>: KES {{ loan.amount_requested }}</td></tr>
+                    <tr><td class="text-info">Type of loan </td><td>: {{ loan.loan.name }}</td></tr>
+                    <tr><td class="text-info">Status </td>
+                        {% if loan.status == 'pending' %}
+                            <td class="text-info">: {{ loan.status.title }} <i class="fa fa-exclamation-triangle"> &nbsp; </i></td>
+                        {% elif loan.status == 'approved' %}
+                            <td style="background: #5cb85c;">: {{ loan.status.title }}
+                                &nbsp; <i class="fa fa-arrow-circle-o-right">&nbsp;</i>
+                            <a class="btn btn-info" href="{% url 'loans:disburse-loan' request_id=loan.id %}">disburse</a>
+                            </td>
+                        {% elif loan.status == 'disbursed' %}
+                            <td style="background: #5cb85c;">: {{ loan.status.title }}
+                                <i class="fa fa-"> &nbsp; </i>
+                            </td>
+                        {% else %}
+                            <td style="background: #d9534f;">: {{ loan.status.title }}  <span class="glyphicon glyphicon-remove-sign"> &nbsp; </span></td>
+                        {% endif %}
+                    </tr>
+                    <tr><td class="text-info">Member number </td><td>: {{ loan.requested_by.member_number }}</td></tr>
+                    <tr><td class="text-info">Member since </td><td>: {{ loan.requested_by.date_joined|date:'d-M-Y' }}</td></tr>
+                    <tr><td class="text-info">Call </td><td>: {{ loan.requested_by.phone_number }}</td></tr>
+                </table>
+                <a href="{% url 'loans:loan-status' pk=loan.requested_by.pk %}" class="btn btn-info" role="button">View Loan Status</a>
+
+            </div>
+        <div class="col-md-6">
+            <h3>Guarantors</h3><hr>
+            {% if loan.guarantors|length > 0 %}
+                <table class="table table-striped">
+                    <thead>
+                        <th>Name</th><th>Member #</th><th>Amount</th><th>Status</th>
+                    </thead>
+                    <tbody>
+                        {% for guarantor in loan.guarantors %}
+                            <tr>
+                                <td>{{ guarantor.guarantor.get_full_name }}</td>
+                                <td>{{ guarantor.guarantor.member_number }}</td>
+                                <td>{{ guarantor.amount }}</td>
+                                <td>{{ guarantor.status|capfirst }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            {% else %}
+                <div class="alert alert-info">
+                    No guarantors requested for this loan
+                </div>
+            {% endif %}
+
+            <h3>Loan Status</h3>
+            {% if not loan.status == "disbursed" %}
+                <form class="" method="post" action="{% url 'loans:approve-loan' pk=loan.pk %}">{% csrf_token %}
+                    <p>{{ form.status }}</p>
+                    <p class="text-right">
+                        <button class="btn btn-info btn-group-justified" type="submit">
+                            Update <i class="fa fa-send"></i>
+                        </button>
+                    </p>
+                </form>
+            {% else %}
+                <p>
+                    Approved and disbursed, <a href="{% url 'loans:loan-status' pk=loan.requested_by.pk %}"> view status </a>
+                </p>
+            {% endif %}
+        </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No loan application with that id was found.  </div>
+    {% endif %}
+    </div>
+
+    </div>
+{% endblock page_content %}

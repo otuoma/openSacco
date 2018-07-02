@@ -1,0 +1,99 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Approve Guarantee Request{% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'loans:loans' %}">Loans</a></li>
+                    <li class="breadcrumb-item">Approve Guarantee Request</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        {% if not_requested %}
+            <div class="alert alert-info">
+                {{ not_requested }}
+            </div>
+
+        {% else %}
+            <div class="row">
+                <div class="col-lg-7 col-xlg-3 col-md-5">
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="card-header text-center pt-3">
+                                <h4 class="card-title">
+                                    Request to guarantee <strong>{{ loan_request.requested_by }}</strong>
+                                </h4>
+                            </div>
+                            <div class="card-body pt-3">
+                                <table class="table table-responsive table-striped">
+                                    <tr>
+                                        <td>Loan</td><td>: {{ loan_request.loan.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amount</td><td>: {{ guarantor_request.amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Date</td><td>: {{ loan_request.date_requested|date:'d-m-Y H:i:s' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Status</td>
+                                        <td>:
+                                            {% if guarantor_request.status == 'rejected' %}
+                                                <span class="text-danger">
+                                            {% else %}
+                                                <span class="text-success">
+                                            {% endif %}
+                                                {{ guarantor_request.status|capfirst }}
+                                            </span>
+                                            {% if loan_request.status == 'pending' %}
+                                                <a class="btn btn-info btn-sm" href="{% url 'loans:approve-guarantee-request' pk=loan_request.pk %}">
+                                                    <i class="fa fa-edit"></i> Change
+                                                </a>
+                                            {% endif %}
+
+                                        </td>
+                                    </tr>
+                                </table>
+                                {% if form %}
+                                    <form action="{% url 'loans:approve-guarantee-request' pk=loan_request.pk %}" method="post">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <p class="text-right">
+                                            <button type="submit" class="btn btn-info">Send <i class="fa fa-send"></i></button>
+                                        </p>
+
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-xlg-3 col-md-5"></div>
+            </div>
+        {% endif %}
+        {% if members|length > 0 %}
+            <div class="table table-responsive table-striped">
+                <table>
+                    <thead>
+                        <th>Name</th><th>Member number</th><th>Phone number</th>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.first_name }} {{ member.last_name }}</td>
+                                <td>{{ member.pk }} </td>
+                                <td>{{ member.phone_number }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock page_content %}

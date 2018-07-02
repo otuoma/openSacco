@@ -1,0 +1,65 @@
+<div class="card-deck">
+    <div class="card p-1">
+        <div class="card-header">
+            Contributions
+        </div>
+        <div class="card-body pt-2 m-1">
+            <p>
+                Total {{ total_contributions.amount__sum }}
+            </p>
+            <a href="{% url 'payments:statement' pk=member.pk %}" class="btn btn-danger btn-block">
+                View Statement
+            </a>
+        </div>
+    </div>
+    <div class="card p-1">
+        <div class="card-header">Loans</div>
+        <div class="card-body m-1 pt-2">
+            {% if loans_borrowed.count >= 1 %}
+                <ol>
+                {% for loan in loans_borrowed %}
+                    <li>
+                        {% if loan.is_disbursed %}
+                            <a href="{% url 'loans:view-disbursed-loan' pk=loan.pk %}" >{{ loan }} </a>
+                        {% else %}
+                            {{ loan }}
+                        {% endif %}
+
+                    </li>
+                {% endfor %}
+                </ol>
+                <a href="{% url 'loans:loan-status' pk=member.pk %}" class="btn btn-info btn-block">
+                    View Status
+                </a>
+            {% else %}
+                <p>None</p>
+                {% if member.pk == request.user.pk %}
+                    <a href="{% url 'loans:apply-loan' %}" class="btn btn-facebook btn-block mb-1">
+                        Apply loan
+                    </a>
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="card p-1">
+        <div class="card-header">
+            Dividends
+        </div>
+        <div class="card-body m-1 pt-2">
+            <p>Current Issue: KES {{ total_dividends }}</p>
+            <a href="{% url 'dividends:member-disbursements' member_id=member.pk %}" class="btn btn-success btn-block">Past Issues</a>
+        </div>
+    </div>
+    <div class="card p-1">
+        <div class="card-header">
+            Shares
+        </div>
+        <div class="card-body pt-2 m-1">
+            <p>{{ member_shares }} shares worth {{ share_value }}</p>
+            <a href="{% url 'shares:add-shares' pk=member.pk %}" class="btn btn-info btn-block">
+                Update Shares
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Add New Member{% endblock title %}
+
+{% block main-content %}
+<form enctype="multipart/form-data" method="post" action="{% url 'members:add-member' %}">{% csrf_token %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Deactivate Member Accounts</h3>
+    </div>
+<div class="panel-body">
+
+    {% include 'messages.html' %}
+
+    </div><!-- .panel-body -->
+    <div class="panel-footer">
+        <button class="btn btn-info" type="submit" name="submit"> Submit </button>
+    </div>
+
+</div>
+</form>
+{% endblock main-content %}

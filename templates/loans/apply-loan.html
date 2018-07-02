@@ -1,0 +1,49 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Loan Application {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'payments:list-types' %}">Loans</a></li>
+                    <li class="breadcrumb-item">Loan Application</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-10 col-xlg-3 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Loan Application</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            <form enctype="multipart/form-data" method="post" action="{% url 'loans:apply-loan' %}">{% csrf_token %}
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-6">{{ form.as_p }}</div>
+                                    <div class="col-lg-6">
+                                        <h4>Instructions</h4>
+                                        <ol>
+                                            <li>Provide amount and type of loan</li>
+                                            <li>Request guarantors to secure your loan</li>
+                                            <li>Loan admins will review then approve or reject your application with reasons</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Apply</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

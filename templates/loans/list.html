@@ -1,0 +1,106 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Products {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Loan Products</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if loans|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table table-striped">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Code</th><th>Loan</th><th>Interest</th><th>Repayment</th>
+                            <th style="text-align: right;">Min. Amount</th>
+                            <th style="text-align: right;">Max. Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for loan in loans %}
+                          <tr>
+                            <td>{{ loan.pk }}</td>
+                            <td>
+                                <a href="{% url 'loans:update' pk=loan.pk %}">
+                                    {{ loan.name }}
+                                </a>
+                            </td>
+                              <td>{{ loan.interest_rate }}</td>
+                              <td>{{ loan.repayment_period }} {{ loan.repayment_period_unit|lower|capfirst }}</td>
+                              <td style="text-align: right;">{{ loan.min_amount }}</td>
+                              <td style="text-align: right;">{{ loan.max_amount }}</td>
+                          <td>
+                              {% if perms.loans.delete_loan %}
+                                <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#delete-loan-{{ loan.pk }}"> delete </a>
+                                <div id="delete-loan-{{ loan.pk }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Delete Loan {{ loan.name }} </h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h3 class="text-danger">Are you sure you want to delete {{ loan.name }} ?</h3>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{% url 'loans:delete' pk=loan.pk %}" method="post" >
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-danger" type="submit"> Delete </button>
+                                                    <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                                                </form>
+                                            </div>
+                                        </div><!-- .modal-content -->
+                                    </div>
+                                </div>
+                              {% endif %}
+                        </td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+                <h5>
+                    No loan products exist yet,
+                    <a href="{% url 'loans:create-loan' %}" class="">add new</a>
+                </h5>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if loans.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ loans.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in loans.paginator.page_range %}
+                    <li {% if loans.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if loans.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ loans.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ loans.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

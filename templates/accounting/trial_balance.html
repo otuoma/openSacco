@@ -1,0 +1,111 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Trial Balance {% endblock page_title %}
+{% load humanize %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        {% include 'messages.html' %}
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account' %}">
+                    <i class="fa fa-list"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account-group' %}">
+                    <i class="fa fa-list-ul"></i> General Ledger
+                </a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Trial Balance</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            <form method="get" action="{% url 'accounting:trial-balance' %}" class="inline-form">
+                                <div class="row bg-light-primary py-2 mx-1 my-0 hidden-sm-down">
+                                    <div class="col-2">
+                                        <label for="date_from" class="text-left">From</label>
+                                        <input id="date_from" class="form-control" type="datetime-local" name="date_from" />
+                                    </div>
+                                    <div class="col-2">
+                                        <label for="date_to" style="text-align: left;">To</label>
+                                        <input id="date_to" class="form-control" type="datetime-local" name="date_to" />
+                                    </div>
+                                    <div class="col-2" style="text-align: center;">
+                                        <label for="status" style="display: block;">Status</label>
+                                        <select id="status" name="status" class="form-control">
+                                            <option value="all">--</option>
+                                            <option value="active">Active</option>
+                                            <option value="closed">Closed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <label for="active" style="display: block;">&nbsp;</label>
+                                        <button class="btn btn-info" type="submit">
+                                            Update <i class="fa fa-send"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        {% if accounts_dict|length > 0 %}
+                            <table class="table table-bordered table-responsive p-2" id="trial_balance-tbl">
+                                <thead class="">
+                                    <tr>
+                                        <th>Account</th><th>Debit</th><th>Credit</th>
+                                    </tr>
+                                </thead>
+                            <tbody >
+                                {% for group in accounts_dict %}
+                                    {% if group.children_data %}
+                                        <tr>
+                                            <td colspan="3" style="font-weight: bold;" class="bg-light">
+                                                {{ group.group_number }} : {{ group.group_name }}
+                                            </td>
+                                        </tr>
+                                        {% for account in group.children_data %}
+                                            <tr>
+                                                <td>
+                                                    {{ account.account_number }} : {{ account.account_name }}
+                                                </td>
+                                                <td class="text-right">
+                                                    {% if account.increases == 'debit' %}
+                                                        {{ account.account_balance|intcomma }}
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-right">
+                                                    {% if account.increases == 'credit' %}
+                                                        {{ account.account_balance|intcomma }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                                <tr class="bg-light-primary text-dark text-strong" style="font-weight: bold;">
+                                    <td class="text-right">Totals : </td>
+                                    <td class="text-right">{{ debit_total|intcomma }}</td>
+                                    <td class="text-right">{{ credit_total|intcomma }}</td>
+                                </tr>
+
+                            </tbody>
+                            </table>
+                        {% else %}
+                            <div class="alert alert-info"> Empty data set was returned ...</div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

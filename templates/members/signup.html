@@ -1,0 +1,32 @@
+{% extends 'members/alt_base.html' %}
+{% block page_title %} Sign Up to Join Us {% endblock page_title %}
+
+{% block page-content %}
+
+    <section class="bg-primary text-white mb-0" id="about">
+      <div class="container">
+        <h2 class="text-center text-uppercase text-white">Sign Up to Join Us</h2>
+        <hr class="star-light mb-5">
+          <div class="row">
+              <div class="col-3"></div>
+              <div class="col-6">
+                  {% include 'messages.html' %}
+                  <div class="mt-4">
+                      <form action="{% url 'members:create-member' %}" method="post">{% csrf_token %}
+                              {{ form.as_p }}
+                              <p class="text-right">
+                              <button type="submit" class="btn btn-info">
+                                  <i class="fa fa-user-plus"></i>
+                                  Sign Up
+                              </button>
+                              </p>
+                          </form>
+                  </div>
+              </div>
+              <div class="col-3"></div>
+
+          </div>
+
+      </div>
+    </section>
+{% endblock page-content %}

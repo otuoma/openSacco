@@ -1,0 +1,98 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Payment Types {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a href="{% url 'payments:make-payment-type' %}" class="nav-link">Create New</a>
+            </li>
+        </ul>
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Contribution Accounts</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if paymenttype_list|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Code</th><th>Account</th><th>Frequency</th><th>Min. amount</th><th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for paymenttype in paymenttype_list %}
+                          <tr>
+                            <td>{{ paymenttype.pk }}</td>
+                            <td>
+                                <a href="{% url 'payments:update-type' pk=paymenttype.pk %}">
+                                    {{ paymenttype.payment_type }}
+                                </a>
+                            </td>
+                            <td>{{ paymenttype.frequency|lower|capfirst }}</td>
+                            <td>{{ paymenttype.min_amount }}</td>
+
+                                {% if paymenttype.is_active %}
+                                   <td title="Active savings account"> <i class="fa fa-check-square text-success fa-lg"></i></td>
+                                {% else %}
+                                    <td title="Inactive savings account"><i class="fa fa fa-exclamation-triangle fa-lg"></i></td>
+                                {% endif %}
+                            <td>
+                                <a href="{% url 'payments:delete-type' pk=paymenttype.pk %}" class="btn btn-danger fa-lg">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+                <h5>
+                    No payment categories exist yet
+                    <a href="{% url 'payments:make-payment-type' %}" class="btn btn-info">
+                        add new
+                    </a>
+                </h5>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if paymenttype_list.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in paymenttype_list.paginator.page_range %}
+                    <li {% if paymenttype_list.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if paymenttype_list.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

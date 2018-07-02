@@ -1,0 +1,85 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Upload Contributions {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'payments:list-types' %}">Contributions</a></li>
+                    <li class="breadcrumb-item">Bulk Upload</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+
+        <div class="row">
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header text-center">
+                            <h3 class="card-title pt-2">Upload Member Contributions</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" action="{% url 'payments:upload-contributions' %}" enctype="multipart/form-data" class="pt-3">{% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Upload</button>
+                                </div>
+                            </form>
+                            <p>
+                            <h3>Instructions</h3>
+                              <ol>
+                                  <li>Download sample excel file <a href="/static/downloads/contributions.xlsx">here</a></li>
+                                  <li>Fill in payment details carefully!</li>
+                                  <li>Double check to ensure member numbers correspond to actual members or contribution will be credited to wrong member.</li>
+                                  <li>Upload payments for each category separately to reduce risk of erros.</li>
+                              </ol>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                {% if payments|length > 0 or exceptions|length > 0 or fails|length > 0 %}
+                    <div class="card">
+                        <div class="card-block">
+                            <div class="card-header text-center">
+                                <h3 class="card-title pt-2">Upload Report</h3>
+                            </div>
+                            <div class="card-body pt-2">
+                                <h4>{{ payments|length }} rows imported</h4>
+                                <table class="table table-responsive table-striped">
+                                    {% for item in payments %}
+                                        <tr>
+                                            <td style="color: green;"><i class="fa fa-check-square"></i></td>
+                                            <td>{{ item.member.get_full_name }}</td>
+                                            <td>{{ item.amount }}</td>
+                                            <td>{{ item.payment_type }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+
+                                {% if fails|length > 0 %}
+                                    {{ fails|length }} rows failed
+                                {% endif %}
+                                {% if exceptions|length > 0 %}
+                                    <h4>Errors reported ( {{ exceptions|length }} )</h4>
+                                    <ol>
+                                        {% for exception in exceptions %}
+                                            <li>{{ exception }}<br></li>
+                                        {% endfor %}
+                                    </ol>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

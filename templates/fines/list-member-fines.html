@@ -1,0 +1,81 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Member Fines {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <ul class="nav justify-content-end">
+      <li class="nav-item">
+          {% if request.user.perms.change_fine %}
+            <a class="nav-link" href="{% url 'fines:list-fines' %}">Fines Summary</a>
+          {% endif %}
+      </li>
+    </ul>
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Fines for {{ member.get_full_name }}</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+        <div class="row">
+            <div class="col-9">
+                {% if fines|length > 0 %}
+                  <div class="table-responsive table-dark table-hover">
+                      <table class="table table-striped">
+                          <thead style="font-weight: 900;">
+                            <tr>
+                                <th>Member</th><th>Date</th><th>Description</th><th>Credit</th><th>Debit</th><th>Outstanding</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                          {% for fine in fines %}
+                              <tr>
+                                  <td>
+                                      <a href="{% url 'members:profile' pk=member.pk %}">
+                                          {{ fine.member_account.get_full_name }}
+                                      </a>
+                                  </td>
+                                  <td>{{ fine.date|date:"d-m-Y" }}</td>
+                                  <td>{{ fine.description }}</td>
+                                  <td style="">{{ fine.credit }}</td>
+                                  <td style="">{{ fine.debit }}</td>
+                                      {% if fine.amount_outstanding <= 0 %}
+                                          <td class="text-success text-right">{{ fine.amount_outstanding }}
+                                      {% else %}
+                                          <td class="text-danger text-right">{{ fine.amount_outstanding }}
+                                      {% endif %}
+                              </tr>
+                          {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+          {% else %}
+              <div>
+                <div class="alert alert-info mt-3">
+                    No fines exist yet
+                    {% if perms.fines.change_fine %},
+                        <a href="{% url 'fines:create-fine' pk=request.user.pk %}" class="">add new</a>
+                    {% endif %}
+                </div>
+              </div>
+          {% endif %}
+            </div>
+            <div class="col-3">
+                {% if perms.fines.change_fine %}
+                <a href="{% url 'fines:pay-fine' pk=member.pk %}" class="btn btn-info btn-block mt-3">
+                    Make payment
+                </a>
+                <a href="{% url 'fines:create-fine' pk=member.pk %}" class="btn btn-info btn-block mt-3">
+                    Add Fine
+                </a>
+                {% endif %}
+                <p>
+                <h4>NB: </h4>
+                Fine instances once created can only be updated by adding a fine credit <code>aka</code> payment or debit to the members account.
+                </p>
+            </div>
+
+        </div>
+
+      </div>
+    <div class="card-footer"> </div>
+    </div>
+{% endblock page_content %}

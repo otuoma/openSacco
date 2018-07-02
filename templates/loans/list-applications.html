@@ -1,0 +1,82 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Products {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">View Loan Applications</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+      {% if applications.count > 0 %}
+          <table class="table table-responsive table-striped">
+              <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+              </thead>
+        {% for application in applications %}
+            <tr>
+                <td>
+                    <a href="{% url 'members:profile' pk=application.requested_by.pk %}"> {{ application.requested_by.get_full_name }} </a>
+                </td>
+                <td>{{ application.amount_requested }}</td>
+                <td>{{ application.loan }}</td>
+                <td>{{ application.date_requested|date:'d-M-Y H:i:s' }}</td>
+                <td>{{ is_disbursed }}
+                    {% if application.status == 'pending' %}
+                        <a href="{% url 'loans:approve-loan' pk=application.pk %}" class="btn btn-info">Pending</a>
+                    {% elif application.status == 'rejected' %}
+                        <a href="{% url 'loans:approve-loan' pk=application.pk %}" class="btn btn-danger">Rejected</a>
+                    {% elif application.status == 'disbursed'  %}
+                        <a href="{% url 'loans:approve-loan' pk=application.pk %}" class="btn btn-success">Disbursed</a>
+                    {% elif application.status == 'approved' %}
+                        <a href="{% url 'loans:approve-loan' pk=application.pk %}" class="btn btn-success">Approved</a>
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <div class="alert alert-info">No loan requests have been made yet ... </div>
+    {% endif %}
+
+    </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if applications.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ applications.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in applications.paginator.page_range %}
+                    <li {% if applications.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if applications.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ applications.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ applications.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,48 @@
+{% extends 'easy_pdf/base.html' %}
+
+{% block extra_style %}
+    <style type="text/css">
+        body{
+            color: #0f8edd;
+        }
+    .bg-grey{
+        background-color: #eee;
+        padding: 5px;
+        padding-top:12px;
+    }
+    #table-header{font-weight:bold;}
+    td {padding: 2px;}
+    #table-header td{padding: 5px auto 2px auto;}
+
+    </style>
+{% endblock extra_style %}
+
+{% block content %}
+{#    <img src="{{ resource.image.url|get64 }}img/wecan/wecan-logo-1.png" />#}
+    {% include 'pdf-letter-head.html' %}
+    <h1 class="bg-grey"><i class="fa fa-ok"></i>
+        {{ title }}</h1>
+    {{ date_from }}
+    {% if contributions|length > 0 %}
+        <table class="table">
+              <thead style="font-weight: 900; text-align: left;">
+                <tr>
+                    <td>Date</td><td>Member</td><td style="text-align: right;">Amount</td><td>For</td><td>Staff</td>
+                </tr>
+              </thead>
+              <tbody>
+              {% for contribution in contributions %}
+                  <tr>
+                      <td>{{ contribution.date|date:"d/m/Y H:i" }}</td>
+                      <td>{{ contribution.member.get_full_name }}</td>
+                      <td style="text-align: right;">{{ contribution.amount }}</td>
+                      <td>{{ contribution.payment_type }}</td>
+                      <td>{{ contribution.paid_by }}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+    {% else %}
+        <div class="">No Payments Found.</div>
+    {% endif %}
+{% endblock content %}

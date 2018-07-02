@@ -1,0 +1,34 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}403 : Permission denied {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+
+        {% include 'messages.html' %}
+
+        <div class="row">
+            <div class="col-lg-10 col-xlg-10 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <h2 class="text-danger">Permission Denied</h2><hr>
+                        <p>
+                            {% if exception %}
+                                {{ exception }}
+                            {% else %}
+                                Permission denied, contact your system admin.
+                            {% endif %}
+                        </p>
+                        <div class="alert alert-info">
+                            Or <a href="{% url 'members:login' %}">login </a>
+                            if you're not
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,91 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}List of Expenditures {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">List of Expenditures</h2>
+      </div>
+    <div class="card-body p-2">
+    <div class="row">
+        <div class="col-lg-10 col-md-10">
+            {% if expenditures %}
+            <form method="post" action="{% url 'pettycash:list-expenditures' %}">{% csrf_token %}
+                <table id="expenditure-filters-form">
+                    <tr>
+                        <td>From</td>
+                        <td>{{ form.date_from }}</td>
+                        <td>To</td>
+                        <td>{{ form.date_to }}</td>
+                        <td><button type="submit" class="btn btn-info">Update</button></td>
+                        <td>
+                            <a href="{% url 'pettycash:list-expenditures' %}" class="btn btn-success"> Reset </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'pettycash:add-expenditure' %}" class="btn btn-danger"> Add New </a>
+                        </td>
+                        <td>
+
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <table class="table table-responsive table-striped mt-3">
+            <tr>
+                <th>Date</th><th>By</th><th>Description</th><th style="text-align: right">Amount</th>
+            </tr>
+                {% for expenditure in expenditures %}
+                    <tr>
+                        <td>{{ expenditure.date|date:'Y-m-d' }}</td>
+                        <td>{{ expenditure.member }}</td>
+                        <td>{{ expenditure.description }}</td>
+                        <td style="text-align: right">
+                            {{ expenditure.amount }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <div class="alert alert-info"> No expenditures found.</div>
+        {% endif %}
+        </div>
+        <div class="col-lg-2 col-md-2" style="text-align: center;">
+            <h1 style="background: #ccc;">
+                {{ total.amount__sum }}
+            </h1>Total
+        </div>
+    </div>
+
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if paymenttype_list.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in paymenttype_list.paginator.page_range %}
+                    <li {% if paymenttype_list.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if paymenttype_list.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ paymenttype_list.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

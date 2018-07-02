@@ -1,0 +1,79 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Messages {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Messages</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if notifications|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table table-striped">
+                      <thead style="font-weight: 900;">
+                        <tr><th>Message</th><th>From</th><th>Date</th><th>Read</th></tr>
+                      </thead>
+                      <tbody>
+                      {% for notification in notifications %}
+                          <tr>
+                            <td>
+                                <a href="{% url 'notifications:view-notification' pk=notification.pk %}">
+                                    {% if notification.read %}
+                                        <span class="text-gray-dark">{{ notification.title|truncatewords:5 }}</span>
+                                    {% else %}
+                                        {{ notification.title|truncatewords:5 }}
+                                    {% endif %}
+
+                                </a>
+                            </td>
+                              <td>{{ notification.sender }}</td>
+                              <td>{{ notification.date|date:'d-m-Y H:i:s' }}</td>
+                              <td>
+                                  <a href="{% url 'notifications:view-notification' pk=notification.pk %}">
+                                  Read more ..</a>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div class="alert alert-info">No messages for you yet</div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if notifications.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ notifications.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in notifications.paginator.page_range %}
+                    <li {% if notifications.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if notifications.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ notifications.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ notifications.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

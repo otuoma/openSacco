@@ -1,0 +1,62 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %} Shares Home{% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center"></div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-10 col-xlg-3 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Society Shares</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    <table class="table table-striped mt-4">
+                                        <tr>
+                                            <td>Total bought</td>
+                                            <td>{{ total_bought.quantity__sum }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Share value</td>
+                                            <td>{{ share_value }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    {% if perms.shares.can_change_shares %}
+                                        <div class="card mt-4">
+                                            <div class="card-header">
+                                                <h3 class="card-title pt-2">Update Share Value</h3>
+                                            </div>
+                                            <div class="card-body mt-3">
+                                                <form method="post" action="{% url 'shares:shares-home' %}">{% csrf_token %}
+                                                    {{ form.as_p }}
+                                                    <p class="text-right">
+                                                        <button class="btn btn-info" type="submit">
+                                                            Update
+                                                            <i class="fa fa-send"></i>
+                                                        </button>
+                                                    </p>
+                                                </form>
+
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,81 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Repayment {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+        <div class="card-header">
+            <h2 class="">Make Loan Repayment</h2>
+        </div>
+    <div class="card-body p-2">
+        <div class="row">
+            <div class="col-5">
+                <form method="post" action="{% url 'loans:repay-loan' pk=loan_request.pk %}">{% csrf_token %}
+                    <table class="table table-responsive table-striped" style="max-width: 400px;">
+                        <tr>
+                            <td>
+                                {{ form.loan_request.label }}
+                                {{ field.loan_request.errors }}
+                            </td>
+                            <td>{{ form.loan_request }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Amount due (credit)
+                                {{ field.credit.errors }}
+                            </td>
+                            <td>{{ form.credit }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">
+                                <a class="btn btn-info btn" href="{% url 'loans:loan-status' pk=loan_request.requested_by_id %}">
+                                    Loan Status <i class="fa fa-dollar"></i>
+                                </a>
+                            </td>
+                            <td colspan="2" class="text-right">
+                                <button class="btn btn-info btn" type="submit" name="submit">
+                                    Submit <i class="fa fa-send"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                <a href="{% url 'loans:armotization-schedule' %}?loan_request_id={{ loan_request.pk }}" class="btn btn-info btn-block">View Amortized Schedule</a>
+            </div>
+            <div class="col-7">
+                <h3>Loan Summary</h3><hr>
+
+                {% if loan_request %}
+                    <table class="table table-responsive table-striped">
+                        <thead>
+                            <th>Loan </th>
+                            <th style="text-align: right;">Amount</th>
+                            <th style="text-align: right;">Balance</th>
+                            <th style="text-align: right;">Interest</th>
+                            <th style="text-align: right;" title="Equated Monthly Intallment">EMI</th>
+                        </thead>
+                        <tr>
+                            <td>{{ loan_request.loan.name }}</td>
+                            <td id="fixedAmount" style="text-align: right;">
+                                {{ loan_request.amount_requested|floatformat:2 }}
+                            </td>
+                            <td style="text-align: right;">
+                                {{ loan_request.get_amount_outstanding|floatformat:2 }}
+                            </td>
+                            <td style="text-align: right;">
+                                {{ loan_request.loan.interest_rate }}% p.a
+                            </td>
+                            <td style="text-align: right;">
+                                {{ emi|floatformat:2 }}
+                            </td>
+                        </tr>
+                    </table>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+
+    </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,48 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Update {{ accountgroup.group_name }} {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        {% include 'messages.html' %}
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account' %}">Create New Account</a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Update {{ accountgroup.group_name }}</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            <form method="post" class="" action="{% url 'accounting:update-account-group' pk=accountgroup.pk %}">{% csrf_token %}
+                                {{ form.as_p }}
+                                <p class="text-right">
+                                <button type="submit" class="form-group btn btn-info">Update <i class="fa fa-send"></i></button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xlg-3 col-md-6">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Accounts in Group</h3>
+                        </div>
+                        <div class="card-body pt-3">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,137 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}{{ member.get_full_name }} Profile {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-8 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'members:directory' %}">Member Profiles</a></li>
+                    <li class="breadcrumb-item active"><a href="{% url 'members:profile' pk=member.pk %}"> {{ member.get_full_name }}</a></li>
+                    <li class="breadcrumb-item active">Edit Profile </li>
+                </ol>
+            </div>
+            <div class="col-md-4 col-4 align-self-center">&nbsp;</div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <!-- Column -->
+            <div class="col-lg-4 col-xlg-3 col-md-5">
+                <div class="card">
+                    <div class="card-block">
+                        <!-- Button trigger modal -->
+                        <div class="text-right">
+                            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#uploadPhotoModal">
+                              Change photo
+                            </button>
+                        </div>
+
+                        <div class="m-t-30 text-center">
+                            {% if member.profile_photo|length > 1 %}
+                                <img src="/media/{{ member.profile_photo }}" class="img-circle" width="150" height="150"/>
+                            {% else %}
+                                <img src="/media/profile_photos/default_avatar.png" class="img-circle" width="150" />
+                            {% endif %}
+
+                            <h4 class="card-title m-t-10">{{ member.get_full_name }}</h4>
+                            <h6 class="card-subtitle">Member Since {{ member.date_joined|date:'d-m-Y' }}</h6>
+                            <div class="row text-center justify-content-md-center">
+                                {% if member.member_number is not None %}
+                                    <div class="col-5"><i class="fa fa-user-circle-o"></i> <span class="font-medium">{{ member.member_number }}</span></div>
+                                {% endif %}
+                                <div class="col-6"><i class="fa fa-phone"></i> <span class="font-medium">{{ member.phone_number }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-xlg-9 col-md-7">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-body">
+                            <h1>Edit Account</h1><hr>
+                            <form action="{% url 'members:edit-member' pk=member.pk %}" method="post">{% csrf_token %}
+                                {{ form.as_p }}
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-info">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="uploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadPhotoModalLabel">Upload New Profile Photo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <form action="{% url 'members:upload-profile-photo' pk=member.pk %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <p>{{ profile_photo_form.profile_photo }}</p>
+                  <div class="row justify-content-around">
+                      <div class="col-6">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                      </div>
+                      <div class="col-6">
+                          <button type="submit" class="btn btn-primary">Upload</button>
+                      </div>
+                  </div>
+              </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- start deactivate-member-modal -->
+    <div id="deactivate-member-{{ member.pk }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Deactivate Member {{ member.first_name }} </h4>
+                </div>
+                <div class="modal-body">
+                    <h3 class="text-danger">Are you sure you want to deactivate {{ member.first_name }} {{ member.last_name }} ?</h3>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'members:deactivate-account' pk=member.pk %}" method="post" >
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit"> Deactivate </button>
+                        <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                    </form>
+                </div>
+            </div><!-- .modal-content -->
+        </div>
+    </div>
+    <!-- start activate-member-modal -->
+    <div id="activate-member-{{ member.pk }}" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Activate Member {{ member.first_name }} </h4>
+                </div>
+                <div class="modal-body">
+                    <h3 class="text-danger">Are you sure you want to ACTIVATE {{ member.first_name }} {{ member.last_name }} ?</h3>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'members:activate-account' pk=member.pk %}" method="post" >
+                        {% csrf_token %}
+                        <button class="btn btn-info" type="submit"> Activate </button>
+                        <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                    </form>
+                </div>
+            </div><!-- .modal-content -->
+        </div>
+    </div>
+{% endblock page_content %}

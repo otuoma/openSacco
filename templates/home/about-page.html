@@ -1,0 +1,48 @@
+<div class="container">
+    <h2 class="text-center text-uppercase text-white">
+        {{ about_section.page_title|safe }}
+    </h2>
+
+    <hr class="star-light mb-5">
+    <div class="row">
+        <div class="col-lg-6 ml-auto text-center">
+            <p class="lead text-center">
+                <h3>{{ about_section.tagline_left|safe }}</h3>
+            </p>
+            <div class="mt-4">
+                <a class="btn btn-xl btn-outline-light js-scroll-trigger" href="#management">
+                    Our Management &nbsp; <i class="fa fa-chevron-down mr-2"></i>
+                </a>
+            </div>
+            {% if perms.website.canupdate_website %}
+                {% if about_section.pk %}
+                  <a href="/admin/website/about/{{ about_section.pk }}/change/" class="rounded js-scroll-trigger text-xl-center">
+                      <br> <i class="fa fa-2x fa-edit text-danger"></i>
+                  </a>
+                {% else %}
+                    <a href="/admin/website/about/add/" class="rounded js-scroll-trigger text-xl-center">
+                      <br> <i class="fa fa-2x fa-plus text-danger"></i>
+                  </a>
+                {% endif %}
+            {% endif %}
+        </div>
+      <div class="col-lg-6 mr-auto">
+
+          <h4>{{ about_section.section1_title|safe }}</h4>
+          <p class="lead ">{{ about_section.section1_text|safe }}</p>
+
+          <h4>{{ about_section.section2_title|safe }}</h4>
+          <p class="lead ">{{ about_section.section2_text|safe }}</p>
+
+          <h4>{{ about_section.section3_title|safe }}</h4>
+          <p class="lead ">{{ about_section.section3_text|safe }}</p>
+
+          <h4>{{ about_section.section4_title|safe }}</h4>
+          <p class="lead ">{{ about_section.section4_text|safe }}</p>
+
+          <h4>{{ about_section.section5_title|safe }}</h4>
+          <p class="lead ">{{ about_section.section5_text|safe }}</p>
+
+      </div>
+    </div>
+</div>

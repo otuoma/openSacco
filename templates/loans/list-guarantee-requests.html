@@ -1,0 +1,70 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Guarantor Requests {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Loan Guarantor Requests</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if requests_list|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table table-striped">
+                      <thead style="font-weight: 900;">
+                        <tr><th>From</th><th>Loan</th><th>Amount</th><th>Requested</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                      {% for request_item in requests_list %}
+                          <tr>
+                              <td>{{ request_item.loan_request.requested_by.get_full_name }}</td>
+                              <td>{{ request_item.loan_request.loan }}</td>
+                              <td>{{ request_item.amount }}</td>
+                              <td>{{ request_item.loan_request.date_requested }}</td>
+                              <td>
+                                  <a href="{% url 'loans:approve-guarantee-request' pk=request_item.loan_request_id %}">{{ request_item.status }}</a>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div class="alert alert-info">No messages for you yet</div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if notifications.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ notifications.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in notifications.paginator.page_range %}
+                    <li {% if notifications.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if notifications.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ notifications.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ notifications.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,76 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Dividend Issues {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Dividend Issues {{ disbursement.member.get_full_name }}</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if dividend_issues|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  {% if disbursements.count > 0 %}
+        <table class="table table-responsive table-striped" style="">
+            <thead>
+                <th>Member</th><th>Dividend Issue</th><th>Amount</th><th>%</th><th>Effective</th>
+            </thead>
+
+            {% for disbursement in disbursements %}
+                <tr>
+                    <td>{{ disbursement.member.get_full_name }}</td>
+                    <td>{{ disbursement.dividend_issue.issue_name }}</td>
+                    <td>{{ disbursement.amount }}</td>
+                    <td>{{ disbursement.dividend_issue.percentage }}</td>
+                    <td>{{ disbursement.dividend_issue.date_effective|date:'d/m/Y' }}</td>
+                </tr>
+            {% endfor  %}
+        </table>
+    {% else %}
+        <div class="alert alert-info">No disbursements have been made yet.</div>
+    {% endif %}
+              </div>
+
+          {% else %}
+              <div>
+                <h5>
+                    No dividends issued yet,
+                    <a href="{% url 'dividends:create-issue' %}" class="">add new</a>
+                </h5>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if dividend_issues.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in dividend_issues.paginator.page_range %}
+                    <li {% if dividend_issues.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if dividend_issues.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

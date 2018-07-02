@@ -1,0 +1,133 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}{{ member.get_full_name }} Contributions Statement {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="member-functions mb-1 text-right">
+        <ul class="nav nav-pills justify-content-end" role="tablist">
+            <li role="presentation" class="">
+                <a href="#">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    All : <strong>KSHS {{ total_payments.amount__sum }}</strong>
+                </a>
+            </li>
+            <li role="presentation" class="">
+                <a href="#">
+                    <i class="fa fa-telegram" aria-hidden="true"></i>
+                    Contributions: <strong>KSHS {{ total_contributions.amount__sum }}</strong>
+                </a>
+            </li>
+            <li role="presentation" class="">
+                <a href="{% url 'payments:make-payment' pk=member.pk %}">
+                    <i class="fa fa-money" aria-hidden="true"></i>
+                    Make payment
+                </a>
+            </li>
+            <li role="presentation" class="">
+                <a href="#" data-toggle="modal" data-target="#filtersModal">
+                    <i class="fa fa-print" aria-hidden="true"></i> Print
+                </a>
+            </li>
+        </ul>
+        <!-- Modal -->
+        <div class="modal fade text-left" id="filtersModal" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <form action="{% url 'payments:print-statement' pk=member.pk %}" method="get" class="modal-content" id="filters-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-left" id="myModalLabel">Create Print Filters on Member Contributions</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{ filters_form.as_p }}
+                        <div>
+                            <label for="date_from">Date from: </label>
+                            <input id="date_from" name="date_from" type="text" class="form-control" required />
+                        </div>
+                        <div>
+                            <label for="date_to">Date to: </label>
+                            <input id="date_to" name="date_to" type="text" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- end-Modal -->
+    </div>
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Contributions Statement for {{ member.get_full_name }}</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if statement|length > 0 %}
+
+              <div class="table-responsive table-hover table-striped">
+                  <table class="table">
+                      <thead>
+                      <th>Date</th>
+                      <th>For</th>
+                      <th>Paid by</th>
+                        <th style="text-align: right;">Amount</th>
+                        <th style="text-align: right;">Total</th>
+                      </thead>
+                      {% for payment in statement %}
+                          <tr>
+                              <td>
+                                  {% if perms.payments.update_payment %}
+                                      <a href="{% url 'payments:update-payment' pk=payment.pk %}" >
+                                        {{ payment.date|date:'d/m/Y H:i:s' }}
+                                      </a>
+                                  {% else %}
+                                        {{ payment.date|date:'d/m/Y H:i:s' }}
+                                  {% endif %}
+                              </td>
+                              <td>{{ payment.payment_type }}</td>
+                              <td>{{ payment.member.get_full_name }}</td>
+                              <td style="text-align: right;" class="{% if not payment.payment_type.flag == 'contribution' %}text-muted text-info{% endif %}">
+                                {{ payment.amount }}
+                              </td>
+                            <td style="text-align: right;">{{ payment.total }}</td>
+                            </tr>
+                    {% endfor %}
+                </table>
+              </div>
+          {% else %}
+              <div class="alert alert-info"> No contributions have been made yet ... </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if statement.has_previous %}yut
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ statement.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in statement.paginator.page_range %}
+                    <li {% if statement.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if statement.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ statement.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ statement.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

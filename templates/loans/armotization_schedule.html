@@ -1,0 +1,120 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Loan Products {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    {% if loan_request %}
+        <ul class="nav nav-pills justify-content-end">
+          <li class="nav-item">
+              <a class="nav-link" href="{% url 'loans:armotization-schedule' %}?loan_request_id={{ loan_request.pk }}">
+              Armotization Schedule
+              </a>
+          </li>
+            {% if perms.loans.can_manage_loans %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'loans:repay-loan' pk=loan_request.pk %}">Make Repayment</a>
+              </li>
+            {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'loans:loan-status' pk=loan_request.requested_by_id %}">View Statement</a>
+          </li>
+        </ul>
+    {% endif %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Loan Calculator</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+        <form action="{% url 'loans:armotization-schedule' %}" method="post" style="background: #eee;" class="bg-light p-3">{% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    <label for="{{ form.type.label }}">{{ form.type.label }}</label>
+                    {{ form.type }}
+                    {{ form.type.errors }}
+                </div>
+                <div class="col">
+                    <label for="{{ form.loan_amount.label }}">{{ form.loan_amount.label }}</label>
+                    {{ form.loan_amount }}
+                    {{ form.loan_amount.errors }}
+                </div>
+                <div class="col">
+                    <label for="{{ form.term.label }}">{{ form.term.label }} (months)</label>
+                    {{ form.term }}
+                    {{ form.term.errors }}
+                </div>
+                <div class="col">
+                    <label for="{{ form.interest_rate.label }}">{{ form.interest_rate.label }} (p.a.)</label>
+                    {{ form.interest_rate }}
+                    {{ form.interest_rate.errors }}
+                </div>
+                <div class="col-2">
+                    <label for="submit button">&nbsp;</label>
+                    <button type="submit" class="form-control btn btn-info">
+                        Update <i class="fa fa-send"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+          {% if schedule|length > 0 %}
+              <div class="table-responsive table-dark table-hover">
+              <table class="table table-striped mt-2">
+                <thead>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Prev. bal</th>
+                    <th>EMI</th>
+                    <th>Interest</th>
+                    <th>Principal</th>
+                    <th>Balance</th>
+                </thead>
+                {% for item in schedule %}
+                    <tr>
+                        <td>{{ item.num }}.</td>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.prev_balance }}</td>
+                        <td>{{ item.emi }}</td>
+                        <td>{{ item.interest }}</td>
+                        <td>{{ item.principal }}</td>
+                        <td>{{ item.balance }}</td>
+                    </tr>
+                {% endfor %}
+              </table>
+                  <h5 class="m-5">Total repayable <span class="badge badge-info">{{ total_repayable|floatformat:2 }}</span></h5>
+              </div>
+
+          {% else %}
+              <div class="alert alert-primary">Provide your loan details to view armotized schedule.</div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if loans.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ loans.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in loans.paginator.page_range %}
+                    <li {% if loans.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if loans.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ loans.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ loans.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

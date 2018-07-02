@@ -1,0 +1,91 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% load notification_extras %}
+{% block page_title %} Shares Distribution {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center"></div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-10 col-xlg-3 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Shares Distribution</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    {% if shares_list|length > 0 %}
+                                        <table class="table table-striped mt-4">
+                                        <thead>
+                                            <th>Member</th><th>Shares</th><th>Value</th>
+                                        </thead>
+                                            {% for share in shares_list %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'members:profile' pk=share.member.pk %}">
+                                                        {{ share.member.get_full_name }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ share.quantity }}</td>
+                                                    <td>{{ share.quantity|multiply:share_value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    {% else %}
+                                        <div class="alert alert-info">
+                                            No shares have been issued yet
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 col-lg-6 text-center">
+                                    <h4 class="mt-5">
+                                        {% if shares_list|length > 0 %}
+                                            {{ total_bought.quantity__sum }} Shares worth {{ total_bought.quantity__sum|multiply:share_value }}
+                                        {% endif %}
+                                    </h4>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="Members pagination">
+                                <ul class="pagination pagination-centered">
+                                    {% if shares_list.has_previous %}
+                                        <li class="page-item">
+                                            <a href="?page=1" class="page-link"><<</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a href="?page={{ shares_list.previous_page_number }}" class="page-link"><</a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for i in shares_list.paginator.page_range %}
+                                        <li {% if shares_list.number == i %} class="page-item active" {% endif %}>
+                                            <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                                        </li>
+                                    {% endfor %}
+
+                                    {% if shares_list.has_next %}
+                                        <li class="page-item">
+                                            <a href="?page={{ shares_list.next_page_number }}" class="page-link">></a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a href="?page={{ shares_list.paginator.num_pages }}" class="page-link">>></a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

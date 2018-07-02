@@ -1,0 +1,106 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Dividend Issues {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Dividend Issues</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if dividend_issues|length > 0 %}
+
+              <div class="table-responsive table-dark table-hover">
+                  <table class="table table-striped">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Issue</th><th>Period</th><th>%</th><th>Effective</th>
+                            {% if perms.can_delete_dividends %}
+                                <th>Delete</th>
+                            {% endif %}
+
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for issue in dividend_issues %}
+                          <tr>
+                              <td>
+                                  <a href="{% url 'dividends:update-issue' pk=issue.pk %}">
+                                    {{ issue.issue_name }}
+                                  </a>
+                              </td>
+                            <td>{{ issue.period }}</td>
+                              <td>{{ issue.percentage }}</td>
+                              <td>{{ issue.date_effective|date:'d/m/Y' }}</td>
+                              {% if perms.can_delete_dividends %}
+                                  <td>
+                                    <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#delete-issue-{{ issue.pk }}"> delete </a>
+                                    <div id="delete-issue-{{ issue.pk }}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4>Delete Issue {{ issue.issue_name }} </h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h3 class="text-danger">Are you sure you want to delete {{ issue.issue_name }} ?</h3>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="{% url 'dividends:delete-issue' pk=issue.pk %}" method="post" >
+                                                        {% csrf_token %}
+                                                        <button class="btn btn-danger" type="submit"> Delete </button>
+                                                        <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                                                    </form>
+                                                </div>
+                                            </div><!-- .modal-content -->
+                                        </div>
+                                    </div>
+                                </td>
+                          {% endif %}
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+                <h5>
+                    No dividends issued yet,
+                    <a href="{% url 'dividends:create-issue' %}" class="">add new</a>
+                </h5>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if dividend_issues.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in dividend_issues.paginator.page_range %}
+                    <li {% if dividend_issues.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if dividend_issues.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ dividend_issues.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

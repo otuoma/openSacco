@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114227718-1"></script>
+      <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-114227718-1');</script>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Our mission is to economically transform lives of young people in Kenya and beyond through provision of innovative and affordable financial solutions">
+      <meta name="keywords" content="wecan, wecan youth sacco, wecan sacco, sacco, sacco in kenya, youth sacco in kenya, sacco by-laws">
+      <meta name="author" content="">
+    <title>{% block page_title %}HOME :: {% endblock %}openSACCO</title>
+    <meta name="google-site-verification" content="6inrrcFwGygMsFwiH0YLDrexvYBXbgMjDLMANE31vm0" />
+    {% load static %}
+
+    <link href="{% static 'vendor/bootstrap/css/auth_bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'vendor/magnific-popup/magnific-popup.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  </head>
+  <body id="page-top">
+
+    <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+        {% include 'home/navigation.html' %}
+    </nav>
+
+    {% block page-content %}
+        <h2>Page Content</h2>
+        <hr class="star-light">
+    {% endblock page-content %}
+
+      <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'vendor/magnific-popup/jquery.magnific-popup.min.js' %}"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="{% static 'js/jqBootstrapValidation.js' %}"></script>
+    <script src="{% static 'js/contact_me.js' %}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{% static 'js/freelancer.js' %}"></script>
+
+  </body>
+
+</html>

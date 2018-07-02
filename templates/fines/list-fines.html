@@ -1,0 +1,101 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Member Fines {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Member Fines</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+        <div class="row">
+            <div class="col-6">
+                {% if fines|length > 0 %}
+                  <div class="table-responsive table-dark table-hover">
+                      <table class="table table-striped">
+                          <thead style="font-weight: 900;">
+                            <th>Member</th><th class="text-right">Outstanding</th><th class="text-center">Pay</th><th class="text-center">Fine</th>
+                          </thead>
+                          <tbody>
+                            {% for fine in fines %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'fines:list-member-fines' pk=fine.member.pk %}">
+                                            {{ fine.member.get_full_name }}
+                                        </a>
+                                    </td>
+                                    {% if fine.amount_outstanding <= 0 %}
+                                          <td class="text-success text-right">{{ fine.amount_outstanding }}
+                                      {% else %}
+                                          <td class="text-danger text-right">{{ fine.amount_outstanding }}
+                                      {% endif %}
+                                    <td>
+                                        <a href="{% url 'fines:pay-fine' pk=fine.member.pk %}" class="btn btn-default text-center">
+                                            <i class="fa fa-credit-card fa-lg"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'fines:create-fine' pk=fine.member.pk %}" class="btn btn-default text-center">
+                                            <i class="fa fa-money fa-lg"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
+                {% else %}
+                  <div>
+                    <div class="alert alert-info">
+                        No members fines exist yet,
+                        <a href="{% url 'fines:create-fine' pk=request.user.pk %}" class="">add new</a>
+                    </div>
+                  </div>
+                {% endif %}
+            </div>
+            <div class="col-3 mt-3">
+                <button class="btn btn-block">Total credit : {{ total_credit.credit__sum }}</button>
+                <button class="btn btn-block">Total debit : {{ total_debit.debit__sum }}</button>
+                <button class="btn btn-block">Total outstanding :
+                   {% if amount_outstanding <= 0 %}
+                        <span class="text-success">{{ amount_outstanding }}</span>
+                    {% else %}
+                        <span class="text-danger">{{ amount_outstanding }}</span>
+                    {% endif %}
+                </button>
+            </div>
+        <div class="col-3"></div>
+        </div>
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Loans pagination">
+            <ul class="pagination pagination-centered">
+                {% if fines.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ fines.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in fines.paginator.page_range %}
+                    <li {% if fines.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if fines.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ fines.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ fines.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

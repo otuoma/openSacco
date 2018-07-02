@@ -1,0 +1,44 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Update Dividends Issue {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-10 col-xlg-3 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2">Process Issue : {{ current_issue.issue_name }}</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if not current_issue is None %}
+
+                                <h4>This will calculate dividends for all members for the <strong>{{ current_issue.issue_name }}</strong>.</h4>
+
+                                <table class="table table-responsive table-bordered">
+                                    <tr><td><strong>Effective from</strong> </td><td> {{ current_issue.date_effective }}</td></tr>
+                                    <tr><td><strong>For the period</strong> </td><td> {{ current_issue.period }}</td></tr>
+                                    <tr><td><strong>At the rate of</strong> </td><td> {{ current_issue.percentage }}%</td></tr>
+                                </table>
+
+                                <form action="{% url 'dividends:calculate-dividends' %}" method="post">{% csrf_token %}
+                                    <p class="">
+                                        <a class="text-left btn btn-info" href="{% url 'dividends:update-issue' pk=current_issue.pk %}">Update</a>
+                                        <button type="submit" class="text-right btn btn-success">Proceed</button>
+                                    </p>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-info">No dividend issue is defined yet</div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,183 @@
+{% extends 'members/alt_base.html' %}
+{% block page_title %} Welcome To {% endblock page_title %}
+
+{% block page-content %}
+
+    <section class="mb-0" id="about" style="background: #efefef;">
+      <div class="container">
+        <h2 class="text-center text-uppercase text-dark">Welcome To Wecan Youth Sacco!</h2>
+        <hr class="star-dark mb-5">
+          {% include 'messages.html' %}
+
+
+            <div class="row">
+                <div class="col-8">
+                    <p class="lead">
+                    Dear Member,<br /><br />
+
+                        Thank you for considering joining the Wecan Youth Sacco Family! We are excited about the potential you will bring to our institution in the coming years.</p>
+                    <p class="lead">Wecan Youth Sacco Limited, was formed and registered in the year 2013 by a group of friends who had a common value and purpose - to empower the youth of this country to save for a brighter future. Over the years, the team of friends has grown to become a family of young individuals who share a passion for financial growth & development, youth empowerment & community development. Our main focus in these years has been to encourage our members to save and invest at an early age in order to secure their future.</p>
+
+                    <p class="lead">To this end, we have attached the documents on the right for your review and action should you wish to pursue your membership further.
+                        The documents include:
+                    <ol>
+                      <li>Wecan Youth Sacco By-Laws</li>
+                      <li>Wecan Youth Sacco Membership Form</li>
+                      <li>Wecan Youth Sacco Nomination Form</li>
+                      <li>Wecan Youth Sacco Bank Details</li>
+                      <li>Wecan Youth Sacco By-laws Atestation</li>
+                    </ol>
+                    ​<p class="lead">Kindly return the filled membership form as well as the nomination form to any of the officials copied herein.​</p>
+
+                    <p class="lead">Kindly note that our registration fees is KES 500 and Share capital KES 1,000 while minimum savings is KES 500 per month.</p>
+
+                    <p class="lead">Please feel free to reach out to us should you have any questions or require additional information.</p>
+
+                <p class="lead">We look forward to fruitful interactions in the future.<br>
+
+                Thank you.<br />
+                </p>
+                </div>
+                <div class="col-4">
+                      {% if download_list|length > 0 %}
+                        {% for download in download_list %}
+
+                            <div class="card p-2">
+                                <div class="card-header">
+                                    <h4 class="card-title text-left mb-0 text-center">
+                                        {{ download.title }}
+                                        {% if perms.website.update_website %}
+                                            <a href="/admin/website/download/{{ download.pk }}/change/" class="text-success text-right"><i class="fa fa-edit"></i></a>
+                                        {% endif %}
+                                    </h4>
+                                </div><!-- end .card-header-->
+                                <div class="card-body">
+                                    <a href="/media/{{ download.document }}" class="btn btn-block">
+                                        View Document &nbsp; <i class="fa fa-download fa-lg"> </i>
+                                    </a>
+                                </div>
+                            </div><!--end .card-->
+                        {% endfor %}
+                          <div class="text-center mt-4">
+                              <a class="btn btn-xl btn-success" href="{% url 'home' %}">
+                                <i class="fa fa-backward mr-2"></i>
+                                Back Home
+                              </a>
+                          </div>
+                    {% else %}
+                        <div class="alert alert-info">No documents have been added yet. </div>
+                    {% endif %}
+
+                </div><!-- end col-6-->
+      </div>
+    </section>
+    <!-- Footer -->
+    <footer class="footer text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-5 mb-lg-0">
+            <h4 class="text-uppercase mb-4">
+                <i class="fa fa-envelope-square"></i> {{ footer_left.title }}
+            </h4>
+            <p class="lead mb-0 ">{{ footer_left.text|safe }}</p>
+              {% if perms.website.can_update_website %}
+                {% if footer_left.pk %}
+                    <a href="/admin/website/footerleft/{{ footer_left.pk }}/change/" class="text-white"><i class="fa fa-edit"></i></a>
+                {% else %}
+                    <a href="/admin/website/footerleft/add/" class="text-white"><i class="fa fa-plus"></i></a>
+                {% endif %}
+              {% endif %}
+          </div>
+          <div class="col-md-4 mb-5 mb-lg-0">
+            <h4 class="text-uppercase mb-4">
+                <i class="fa fa-wechat"></i> {{ footer_center.title }}
+            </h4>
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item">
+                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="{{ footer_center.facebook_url }}">
+                  <i class="fa fa-fw fa-facebook"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="{{ footer_center.googleplus_url }}">
+                  <i class="fa fa-fw fa-google-plus"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="{{ footer_center.twitter_url }}">
+                  <i class="fa fa-fw fa-twitter"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="{{ footer_center.linked_in_url }}">
+                  <i class="fa fa-fw fa-linkedin"></i>
+                </a>
+              </li>
+              <li class="list-inline-item">
+                <a class="btn btn-outline-light btn-social text-center rounded-circle" href="{{ footer_center.dribble_url }}">
+                  <i class="fa fa-fw fa-dribbble"></i>
+                </a>
+              </li>
+            </ul>
+              {% if perms.website.can_update_website %}
+                <p class="pt-4">
+                    {% if footer_center.pk %}
+                        <a href="/admin/website/footercenter/{{ footer_center.pk }}/change/" class="text-white"><i class="fa fa-edit"></i></a>
+                    {% else %}
+                        <a href="/admin/website/footercenter/add/" class="text-white"><i class="fa fa-plus"></i></a>
+                    {% endif %}
+
+                </p>
+              {% endif %}
+          </div>
+          <div class="col-md-4">
+              <h4 class="text-uppercase mb-4">
+                <i class="fa fa-group"></i> {{ footer_right.title }}
+              </h4>
+              <p class="lead mb-0">
+                {{ footer_right.text|safe }}
+                <br/><a href="#page-top" class="js-scroll-trigger">{{ footer_right.signup_link_text }}</a>
+              </p>
+              <p class="pt-4">
+                  {% if perms.website.can_update_website %}
+                      {% if footer_right.pk %}
+                        <a href="/admin/website/footerright/{{ footer_right.pk }}/change/" class="text-white">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                      {% else %}
+                          <a href="/admin/website/footerright/add/" class="text-white">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                      {% endif %}
+                  {% endif %}
+              </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div class="copyright py-4 text-center text-white">
+      <div class="container">
+          <div class="row">
+              <div class="col-md-6 text-left">
+                <small>Copyright &copy; WeCan Youth SACCO, {% now "Y" %}</small>
+              </div>
+              <div class="col-md-6 text-right">
+                <small>Powered by <a target="_blank" href="//shivala.co.ke">openSACCO Platform</a>.</small>
+              </div>
+
+          </div>
+      </div>
+    </div>
+
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-to-top position-fixed ">
+      <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+    </div>
+
+    <!-- Portfolio Modals -->
+
+
+{% endblock page-content %}

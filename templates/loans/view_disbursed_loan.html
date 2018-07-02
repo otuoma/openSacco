@@ -1,0 +1,87 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}{{ loan_request }} | {{ loan_request.requested_by }} {% endblock page_title %}
+{% block page_content %}
+    <ul class="nav nav-pills justify-content-end">
+      <li class="nav-item">
+          <a class="nav-link" href="{% url 'loans:armotization-schedule' %}?loan_request_id={{ loan_request.pk }}">
+          Armotization Schedule
+          </a>
+      </li>
+        {% if perms.loans.can_manage_loans %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'loans:repay-loan' pk=loan_request.pk %}">Make Repayment</a>
+          </li>
+        {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'loans:loan-status' pk=loan_request.requested_by_id %}">View Statement</a>
+      </li>
+    </ul>
+
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">{{ loan_request }} | {{ loan_request.requested_by }}</h2>
+      </div>
+
+    <div class="card-body" style="padding: .5rem;">
+    <div class="row">
+        <div class="col-8">
+            <h4>Repayment Schedule</h4>
+            {{ epoch }}
+            {% if schedule|length > 0 %}
+                <table class="table table-responsive table-striped table-hover">
+                <thead>
+                    <th>#</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Due</th>
+                    <th>Repayments</th>
+                </thead>
+                    {% for epoch in epochs %}
+
+                            <tr {% if epoch.is_current  %}class="bg-light-info"{% endif %}>
+                                <td>
+                                    {% if epoch.is_current  %}
+                                        <span class="fa fa-arrow-right"></span>
+                                    {% else %}
+                                        {{ epoch.num }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ epoch.date_from }}</td>
+                                <td>{{ epoch.date_to }}</td>
+                                <td>{{ epoch.emi }}</td>
+                                <td class="text-center">
+                                    {% if epoch.total_repayments.credit__sum %}
+                                        {{ epoch.total_repayments.credit__sum }}
+                                    {% else %}
+                                        --
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+        <div class="col-4">
+             {% if loan_request %}
+                  <table class="table table-responsive table-striped">
+                      <thead>
+                        <th>Requested</th>
+                      </thead>
+                      <tr>
+                          <td>{{ loan_request.date_requested|date:"d-M-Y" }}</td>
+                      </tr>
+                </table>
+            {% else %}
+                <div class="alert alert-info">No loan item was found </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+
+    </div>
+    <div class="card-footer"></div>
+    </div>
+{% endblock page_content %}

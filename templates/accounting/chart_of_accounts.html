@@ -1,0 +1,77 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% load humanize %}
+{% block page_title %}Chart of accounts {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        {% include 'messages.html' %}
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account' %}">
+                    <i class="fa fa-list"></i> Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounting:create-account-group' %}">
+                    <i class="fa fa-list-ul"></i> Account Groups
+                </a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Chart of accounts</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            {% if accounts_dict|length > 0 %}
+                            <table class="table table-bordered table-responsive p-2" id="trial_balance-tbl">
+                                <thead class="">
+                                    <tr>
+                                        <th>Account</th><th>Increases</th><th>Balance</th><th></th>
+                                    </tr>
+                                </thead>
+                            <tbody >
+                                {% for group in accounts_dict %}
+                                    {% if group.children_data %}
+                                        <tr>
+                                            <td colspan="4" style="font-weight: bold;" class="bg-light">
+                                                {{ group.group_number }} : {{ group.group_name }}
+                                            </td>
+                                        </tr>
+                                        {% for account in group.children_data %}
+                                            <tr>
+                                                <td>
+                                                    {{ account.account_number }} : {{ account.account_name }}
+                                                </td>
+                                                <td>{{ account.increases }}</td>
+                                                <td class="text-right">{{ account.account_balance|intcomma }}</td>
+                                                <td class="">
+                                                    {% if account.inherits == 'none' %}
+                                                        <a href="{% url 'accounting:account-transactions' pk=account.pk %}">
+                                                            <i class="fa fa-th-list"></i>
+                                                        </a>
+                                                    {% else %}
+                                                        --
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+
+                            </tbody>
+                            </table>
+                        {% else %}
+                            <div class="alert alert-info"> Empty data set was returned ...</div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

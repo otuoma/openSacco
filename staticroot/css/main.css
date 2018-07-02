@@ -1,0 +1,156 @@
+.dropdown-menu{
+    z-index: 1000;
+    margin: 0 0 0;
+}
+
+.dropdown-menu li:hover .sub-menu {
+  visibility: visible;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.table th, .table thead th {
+    font-weight: bold;
+}
+.card-no-border .left-sidebar, .card-no-border .sidebar-nav {
+    background: #272C33;
+}
+.sidebar-nav ul li a.active {
+    color: #009efb;
+}
+.topbar .navbar-header {
+    background: #272C33;
+}-nav > ul > li > a {
+    border-left: 3px solid #272C33;
+}
+.card-header {
+    padding: .25rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+.card-header h2{
+    padding: 0 0 0 1px;
+    margin: 0;
+}
+.form-horizontal label {
+    font-weight: 500;
+}
+#filters-form{
+    background-color: #ccc;
+    padding: .4rem;
+    border-radius: 4px;
+}
+.member-functions ul{
+
+}
+.member-functions ul li{
+    background: #eee;
+    margin: auto 0.25rem;
+    border-radius: 4px;
+}
+
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+.nav-pills > li > a > .badge {
+    margin-left: 3px;
+}
+.sidebar-nav ul li a {
+    color: #fff;
+}
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
+label[for='id_total'], input#id_total{display: none;}
+
+#loan-status-td{
+    background-color: #EE6E73;
+    color: honeydew;
+}
+#loan-status-td a{color: #fff;}
+/* Style the buttons that are used to open and close the accordion panel */
+button.accordion-folder {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 6px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+button.accordion-folder{
+    /*border-bottom: white solid 1px;*/
+}
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+button.accordion-folder.active, button.accordion-folder:hover {
+    background-color: #ddd;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+div.accordion-panel accordion-folder{
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+}
+
+button.accordion-folder:after {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    color: #777;
+    float: right;border-bottom: #ccc;
+    margin-left: 5px;
+}
+
+button.accordion-folder.active:after {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
+    padding-right: 5px;
+}
+div.accordion-panel {
+    padding: 0 18px;
+    background-color: white;border: 1px solid #eee;
+    margin-bottom: 1px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+#id_loan_request{
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.errorlist{
+    color: darkred;
+}
+
+@media print {
+    .left-sidebar, .topbar, .footer, .btn {
+        display:none;
+    }
+}
+
+

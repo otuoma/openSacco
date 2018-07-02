@@ -1,0 +1,73 @@
+{% extends 'members/auth_base.html' %}
+{% load static %}
+{% block page_title %}Update {{ loan.name }} {% endblock page_title %}
+
+{% block page_content %}
+
+    <div class="container-fluid">
+        <div class="row page-titles">
+            <div class="col-md-6 col-8 align-self-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'payments:list-types' %}">Loans</a></li>
+                    <li class="breadcrumb-item">Update {{ loan.name }}</li>
+                </ol>
+            </div>
+        </div>
+        {% include 'messages.html' %}
+        <div class="row">
+            <div class="col-lg-10 col-xlg-3 col-md-10">
+                <div class="card">
+                    <div class="card-block">
+                        <div class="card-header">
+                            <h3 class="card-title pt-2 pl-2">Update {{ loan.name }}</h3>
+                        </div>
+                        <div class="card-body pt-3">
+                            <form enctype="multipart/form-data" method="post" action="{% url 'loans:update' pk=loan.pk %}">{% csrf_token %}
+                                {% csrf_token %}
+                                <table class="table table-responsive table-striped">
+                                    <tr>
+                                        <td>{{ form.name.errors }}{{ form.name.label }}</td>
+                                        <td>{{ form.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form.min_amount.errors }}{{ form.min_amount.label }}</td>
+                                        <td>{{ form.min_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form.max_amount.errors }}{{ form.max_amount.label }}</td>
+                                        <td>{{ form.max_amount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form.interest_rate.errors }}{{ form.interest_rate.label }}</td>
+                                        <td>{{ form.interest_rate }}</td>
+                                    </tr>
+                                    <tr>
+                                    <tr>
+                                        <td>{{ form.interest_on.errors }}{{ form.interest_on.label }}</td>
+                                        <td>{{ form.interest_on }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form.repayment_period.errors }}{{ form.repayment_period.label }}</td>
+                                        <td>{{ form.repayment_period }}</td>
+                                    </tr>
+                                                        <tr>
+                                        <td>{{ form.repayment_period_unit.errors }}{{ form.repayment_period_unit.label }}</td>
+                                        <td>{{ form.repayment_period_unit }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ form.description.errors }}{{ form.description.label }}</td>
+                                        <td>{{ form.description }}</td>
+                                    </tr>
+                                </table>
+                                <div class="text-right">
+                                    <button class="btn btn-info" type="submit">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_content %}

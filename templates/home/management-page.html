@@ -1,0 +1,35 @@
+{% load static %}
+<p>
+<h2 class="text-center text-uppercase text-secondary">{{ management_section.page_title }}</h2>
+
+</p>
+<p class="text-center">
+    <hr class="star-dark mb-5">
+</p>
+<div class="container">
+    <p class="text-center">
+        {% if perms.website.can_update_website %}
+            <a href="/admin/website/managementteam/{{ management_section.pk }}/change/" class="text-white"><i class="fa fa-edit"></i></a>
+            &nbsp;
+            <a href="/admin/website/sectionimage/add" class="text-white"><i class="fa fa-plus-square"></i></a>
+        {% endif %}
+    </p>
+    <div class="row text-center">
+        {% for image in management_images %}
+        <div class="col-sm-12 col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="/media/{{ image.image }}" width="100%" alt="{{ image.caption }}">
+                <div class="card-body">
+                    <h4 class="card-title">{{ image.caption }} <br> {{ image.description }}</h4>
+                    {% if perms.website.can_update_website %}
+                        <a href="/admin/website/sectionimage/{{ image.pk }}/change/" class="text-success">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</div>

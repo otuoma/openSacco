@@ -1,0 +1,162 @@
+{% extends 'members/auth_base.html' %}
+{% block page_title %}Members Directory {% endblock page_title %}
+{% block page_content %}
+    {% include 'messages.html' %}
+    <div class="card mb-0" id="directory">
+      <div class="card-header">
+        <h2 class="">Members Directory</h2>
+      </div>
+    <div class="card-body" style="padding: .5rem;">
+
+          {% if members_list|length > 0 %}
+              {% include 'members/member-filters-form.html' %}
+              <div class="table-responsive table-dark table-hover table-striped">
+                  <table class="table">
+                      <thead style="font-weight: 900;">
+                        <tr>
+                            <th>Name</th><th>Number</th><th>Email</th><th>Phone</th><th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for member in members_list %}
+                          <tr>
+                            <td>
+                                <a title="{% if member.is_active and member.member_number is not null %}Active member{% else %}Inactive member{% endif %}" href="{% url 'members:profile' pk=member.pk %}">
+                                    <span class="fa fa-{% if member.is_active and member.member_number is not null %}check-square{% else %}minus-square{% endif %}" aria-hidden="true"></span>
+                                    &nbsp;{{ member.get_full_name }}
+                                </a>
+                            </td>
+                            <td>{{ member.member_number }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.phone_number }}</td>
+                            <td class="non-print-item">
+                                <div class="dropdown text-sm-left">
+                                  <button class="btn btn-default dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Select<span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2" style="margin-top: 0px;">
+                                    {% if perms.payments.add_payment %}
+                                        <li><a href="{% url 'payments:make-payment' pk=member.pk %}" class="nav-link">Make payment</a></li>
+                                    {% endif %}
+                                    {% if perms.view_payments %}
+                                        <li><a href="{% url 'payments:statement' pk=member.pk %}" class="nav-link">View statement</a></li>
+                                    {% endif %}
+                                    {% if perms.members.change_member %}
+                                        <li>
+                                            {% if member.is_active and member.member_number is not null %}
+                                                <li><a href="#"  class="nav-link" data-toggle="modal" data-target="#deactivate-member-{{ member.pk }}"> Deactivate </a>
+                                            {% else %}
+                                                <li><a href="#"  class="nav-link" data-toggle="modal" data-target="#activate-member-{{ member.pk }}"> Activate </a>
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                  </ul>
+
+                                </div>
+                                <!-- start delete-member-modal -->
+                                <div id="delete-member-{{ member.pk }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Delete Member {{ member.first_name }} </h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h3 class="text-danger">Are you sure you want to delete {{ member.first_name }} {{ member.last_name }} ?</h3>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="#" method="post" >
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-danger" type="submit"> Delete </button>
+                                                    <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                                                </form>
+                                            </div>
+                                        </div><!-- .modal-content -->
+                                    </div>
+                                </div>
+                                <!-- start deactivate-member-modal -->
+                                <div id="deactivate-member-{{ member.pk }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Deactivate Member {{ member.first_name }} </h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h3 class="text-danger">Are you sure you want to deactivate {{ member.first_name }} {{ member.last_name }} ?</h3>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{% url 'members:deactivate-account' pk=member.pk %}" method="post" >
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-danger" type="submit"> Deactivate </button>
+                                                    <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                                                </form>
+                                            </div>
+                                        </div><!-- .modal-content -->
+                                    </div>
+                                </div>
+                                <!-- start activate-member-modal -->
+                                <div id="activate-member-{{ member.pk }}" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4>Activate Member {{ member.first_name }} </h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h3 class="text-danger">Are you sure you want to ACTIVATE {{ member.first_name }} {{ member.last_name }} ?</h3>
+                                                <form action="{% url 'members:activate-account' pk=member.pk %}" method="post" >{% csrf_token %}
+                                                    {{ activate_account_form.as_p }}
+                                                    <button class="btn btn-info" type="submit"> Activate </button>
+                                                    <button class="btn btn-default" type="button" data-dismiss="modal"> Cancel </button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            </div>
+                                        </div><!-- .modal-content -->
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+
+          {% else %}
+              <div>
+              {% include 'members/member-filters-form.html' %}
+                <h2> No members found</h2>
+              </div>
+          {% endif %}
+      </div>
+    <div class="card-footer">
+        <nav aria-label="Members pagination">
+            <ul class="pagination pagination-centered">
+                {% if members_list.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link"><<</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ members_list.previous_page_number }}" class="page-link"><</a>
+                    </li>
+                {% endif %}
+
+                {% for i in members_list.paginator.page_range %}
+                    <li {% if members_list.number == i %} class="page-item active" {% endif %}>
+                        <a href="?page={{i}}" class="page-link">{{i}}<span class="sr-only">(current)</span></a>
+                    </li>
+                {% endfor %}
+
+                {% if members_list.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ members_list.next_page_number }}" class="page-link">></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ members_list.paginator.num_pages }}" class="page-link">>></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+    </div>
+    </div>
+{% endblock page_content %}

@@ -1,0 +1,52 @@
+{% extends 'easy_pdf/base.html' %}
+
+{% block extra_style %}
+    <style type="text/css">
+        body{
+            color: #0f8edd;
+        }
+    .bg-grey{
+        background-color: #eee;
+        padding: 5px;
+        padding-top:12px;
+    }
+    #table-header{font-weight:bold;}
+    td {padding: 2px;}
+    #table-header td{padding: 5px auto 2px auto;}
+
+    </style>
+{% endblock extra_style %}
+
+{% block content %}
+{#    <img src="{{ resource.image.url|get64 }}img/wecan/wecan-logo-1.png" />#}
+    {% include 'pdf-letter-head.html' %}
+    <h1 class="bg-grey"><i class="fa fa-ok"></i>
+        {{ title }}
+    </h1>
+
+    {% if loan_repayments %}
+        <table class="table table-responsive table-striped">
+            <thead>
+                <th>Date</th><th>Product</th><th style="text-align:right;">Credit</th><th style="text-align:right;">Debit</th><th>Description</th><th style="text-align: right;">Balance</th></tr>
+            </thead>
+            <tbody>
+                {% for repayment in loan_repayments %}
+                    <tr>
+                        <td>{{ repayment.payment_date|date:'d/m/Y' }}</td>
+                        <td>{{ repayment.loan_request.loan }}</td>
+                        <td style="text-align: right;">{{ repayment.credit|floatformat:2 }}</td>
+                        <td style="text-align: right;">{{ repayment.debit|floatformat:2 }}</td>
+                        <td>{{ repayment.description|capfirst }}</td>
+                        <td style="text-align: right;">{{ repayment.outstanding|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <div class="">No Payments Found.</div>
+    {% endif %}
+    <div style="bottom: 0px;margin-top:6px; padding-top:6px; border-top: solid 2px #eee;">
+        NOTE: This document is system generated, on {% now "d-m-Y H:i:s" %}. To verify it please contact WeCan SACCO office.
+    </div>
+{% endblock content %}
