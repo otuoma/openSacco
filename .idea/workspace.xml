@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b2ca6da-55c2-43a3-85e0-235451ff157e" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/loans/loan-calculator.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/loans/loan-calculator.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,7 +34,7 @@
       <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
+            <state relative-caret-position="-322">
               <caret line="5" column="322" selection-start-line="5" selection-start-column="322" selection-end-line="5" selection-end-column="322" />
             </state>
           </provider>
@@ -51,14 +52,51 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="home.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/home.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
+            <state relative-caret-position="-1740">
               <caret line="60" column="90" selection-start-line="60" selection-start-column="90" selection-end-line="60" selection-end-column="90" />
               <folding>
                 <element signature="e#162#284#0#HTML" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/loans/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="287" column="31" selection-start-line="287" selection-start-column="27" selection-end-line="287" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#83#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="loan-calculator.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/loans/loan-calculator.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="154">
+              <caret line="181" column="64" selection-start-line="181" selection-start-column="64" selection-end-line="181" selection-end-column="64" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="armotization_schedule.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/loans/armotization_schedule.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1597" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="alt_base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/members/alt_base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="449">
+              <caret line="45" column="7" lean-forward="true" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -77,6 +115,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>wecan</find>
+      <find>webs</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -107,6 +146,7 @@
         <option value="$PROJECT_DIR$/opensacco/settings.py" />
         <option value="$PROJECT_DIR$/templates/base.html" />
         <option value="$PROJECT_DIR$/templates/home.html" />
+        <option value="$PROJECT_DIR$/templates/loans/loan-calculator.html" />
       </list>
     </option>
   </component>
@@ -150,6 +190,12 @@
               <item name="opensacco" type="b2602c69:ProjectViewProjectNode" />
               <item name="opensacco" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="opensacco" type="b2602c69:ProjectViewProjectNode" />
+              <item name="opensacco" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="loans" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -227,7 +273,7 @@
       <window_info anchor="bottom" id="Python Console" order="9" />
       <window_info anchor="right" id="SciView" order="4" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.05965463" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.09576138" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -356,13 +402,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="57">
           <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/members/alt_base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="45" column="7" lean-forward="true" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -516,20 +555,49 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/templates/loans/armotization_schedule.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1597" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/members/alt_base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="45" column="7" lean-forward="true" selection-start-line="45" selection-start-column="7" selection-end-line="45" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
+        <state relative-caret-position="-322">
           <caret line="5" column="322" selection-start-line="5" selection-start-column="322" selection-end-line="5" selection-end-column="322" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
+        <state relative-caret-position="-1740">
           <caret line="60" column="90" selection-start-line="60" selection-start-column="90" selection-end-line="60" selection-end-column="90" />
           <folding>
             <element signature="e#162#284#0#HTML" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/loans/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="287" column="31" selection-start-line="287" selection-start-column="27" selection-end-line="287" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#83#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/loans/loan-calculator.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="181" column="64" selection-start-line="181" selection-start-column="64" selection-end-line="181" selection-end-column="64" />
         </state>
       </provider>
     </entry>
