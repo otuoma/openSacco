@@ -4,8 +4,7 @@ from django.core.exceptions import ValidationError
 from .managers import UserManager
 from payments.models import Payment
 from django.db.models import Sum
-# from notifications.models import Notification
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class Member(AbstractUser):

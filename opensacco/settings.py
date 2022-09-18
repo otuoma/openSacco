@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = "20934jfwmc33w95g284qv3o"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,17 +89,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'opensacco.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(f"{BASE_DIR}/db.sqlite3"),
+    }
 }
+
+# HEROKU SETTINGS
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=config('DATABASE_URL')
+#     )
+# }
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'opensacco',
 #         'USER': 'root',
-#         'PASSWORD': 'root101',
+#         'PASSWORD': '',
 #         'HOST': 'localhost',
 #         'PORT': '3306',
 #     },
@@ -124,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-PASSWORD_RESET_TIMEOUT_DAYS = 1
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 1
 
 
 # Internationalization
@@ -136,7 +145,6 @@ TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
-USE_L10N = True
 
 USE_TZ = True
 
@@ -174,10 +182,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_
 EMAIL_PORT = '587'
 EMAIL_SUBJECT_PREFIX = 'openSACCO '
-EMAIL_HOST_USER = 'opensacco-demo2@gmail.com'
-EMAIL_HOST_PASSWORD = 'pwd'
+EMAIL_HOST_USER = 'demo@example.com'
+EMAIL_HOST_PASSWORD = 'password'
 EMAIL_USE_TLS = True
-MANAGERS = [('Otuoma', 'otuomasp@gmail.com'), ]
+MANAGERS = [('Otuoma', 'demo@example.com'), ]
 
 
 

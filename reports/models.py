@@ -2,7 +2,7 @@ from django.db import models
 from members.models import Member
 from django.utils import timezone
 # from datetime import datetime
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 class TrialBalance(models.Model):
     credit = models.FloatField(max_length=50)
