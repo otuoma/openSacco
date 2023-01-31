@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0b2ca6da-55c2-43a3-85e0-235451ff157e" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/opensacco.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/opensacco.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/loans/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/loans/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opensacco/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/opensacco/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opensacco/wsgi.py" beforeDir="false" afterPath="$PROJECT_DIR$/opensacco/wsgi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -193,7 +191,7 @@
       <updated>1530453645903</updated>
       <workItem from="1663518538199" duration="974000" />
       <workItem from="1663519539469" duration="5507000" />
-      <workItem from="1675169694484" duration="5427000" />
+      <workItem from="1675169694484" duration="6495000" />
     </task>
     <servers />
   </component>
